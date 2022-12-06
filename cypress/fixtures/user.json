@@ -1,0 +1,32 @@
+{
+  "id": "12345",
+  "given_name": "Jane",
+  "family_name": "Doe",
+  "email": "jane@blinq.me",
+  "integrations": [
+    {
+      "name": "Salesforce",
+      "options": {
+        "client_id": "",
+        "client_secret": ""
+      },
+      "connected": false
+    },
+    {
+      "name": "Zapier",
+      "options": {
+        "api_key": ""
+      },
+      "connected": false
+    },
+    {
+      "name": "HubSpot",
+      "options": {
+        "tenant_domain": "",
+        "client_id": "",
+        "client_secret": ""
+      },
+      "connected": false
+    }
+  ]
+}
