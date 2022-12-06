@@ -3,5 +3,8 @@ export interface Integration {
   options: {
     [key: string]: string;
   };
+  field_mappings?: {
+    [key: string]: string;
+  };
   connected: boolean;
 }

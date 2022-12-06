@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
-
 import { SidebarItems } from '../../types/sidebar';
 import SidebarNavListItem from './SidebarNavListItem';
 

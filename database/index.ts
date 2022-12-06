@@ -8,6 +8,24 @@ export default class Database {
     given_name: 'Jane',
     family_name: 'Doe',
     email: 'jane@blinq.me',
+    contacts: [
+      {
+        id: '1234',
+        given_name: 'Terry',
+        family_name: 'Walker',
+        email: 'terry@waffles.co',
+        met_at_location: 'Melbourne, Australia',
+        notes: 'Terry has a beard.'
+      },
+      {
+        id: '1235',
+        given_name: 'Terry',
+        family_name: 'Walker',
+        email: 'terry@waffles.co',
+        met_at_location: 'Melbourne, Australia',
+        notes: 'Terry has a beard.'
+      }
+    ],
     integrations: [
       {
         name: 'Salesforce',
@@ -31,6 +49,9 @@ export default class Database {
           client_id: '',
           client_secret: ''
         },
+        field_mappings: {
+          first_name: 'first_name'
+        },
         connected: false
       }
     ]
@@ -46,24 +67,7 @@ export default class Database {
   }
 
   public static getContacts(): Contact[] {
-    return [
-      {
-        id: '1234',
-        given_name: 'Terry',
-        family_name: 'Walker',
-        email: 'terry@waffles.co',
-        met_at_location: 'Melbourne, Australia',
-        notes: 'Terry has a beard.'
-      },
-      {
-        id: '1235',
-        given_name: 'Terry',
-        family_name: 'Walker',
-        email: 'terry@waffles.co',
-        met_at_location: 'Melbourne, Australia',
-        notes: 'Terry has a beard.'
-      }
-    ];
+    return this.user.contacts;
   }
 
   public static getIntegration(id: string) {
@@ -96,8 +100,10 @@ export default class Database {
     }
 
     if (!existingIntegration.connected) {
+      // Simulate connect
       integration.connected = true; // eslint-disable-line no-param-reassign
     } else {
+      // Simulating disconnect
       integration.connected = false; // eslint-disable-line no-param-reassign
 
       Object.keys(integration.options).forEach((key) => {

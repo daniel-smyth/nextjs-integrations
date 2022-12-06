@@ -5,13 +5,18 @@ import React, {
   useMemo,
   useState
 } from 'react';
+import { Integration } from '../models/Integration';
 import { User } from '../models/User';
 
-const UserContext = createContext<{ user: null | User } | null>(null);
+declare type UserContextType = {
+  user: null | User;
+  saveIntegration: (integration: Integration) => Promise<Integration>;
+};
+
+const UserContext = createContext<UserContextType | null>(null);
 
 function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<null | User>(null);
-  const userMemo = useMemo(() => ({ user }), [user]);
 
   useEffect(() => {
     const initialize = async () => {
@@ -38,6 +43,25 @@ function UserProvider({ children }: { children: ReactNode }) {
 
     initialize();
   }, []);
+
+  const saveIntegration = async (integration: Integration) => {
+    const body = JSON.stringify(integration);
+
+    let res: any = await fetch(`/api/integrations/${integration.name}`, {
+      method: 'PUT',
+      body
+    });
+
+    if (res.status === 200) {
+      const response: Integration = await res.json();
+      return response;
+    }
+
+    res = await res.json();
+    throw new Error(res.error);
+  };
+
+  const userMemo = useMemo(() => ({ user, saveIntegration }), [user]);
 
   return (
     <UserContext.Provider value={userMemo}>{children}</UserContext.Provider>

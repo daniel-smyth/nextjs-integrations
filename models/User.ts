@@ -1,3 +1,4 @@
+import { Contact } from './Contact';
 import { Integration } from './Integration';
 
 export interface User {
@@ -5,5 +6,6 @@ export interface User {
   given_name: string;
   family_name: string;
   email: string;
+  contacts: Contact[];
   integrations: Integration[];
 }
