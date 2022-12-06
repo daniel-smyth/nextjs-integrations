@@ -12,27 +12,22 @@ export default nc<NextApiRequest, NextApiResponse>({
     res.status(404).end('Not found');
   }
 })
-  .post(postIntegration)
-  .get(getAllIntegration);
+  .post(postUser)
+  .get(getUser);
 
-async function postIntegration(req: NextApiRequest, res: NextApiResponse) {
+async function postUser(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const integration = Database.addIntegration(req.body);
-
-    if (!integration) {
-      return res.status(409).json({ error: responses.existing_integration });
-    }
-
-    return res.status(201).json(integration);
+    const user = Database.setUser(req.body);
+    return res.status(201).json(user);
   } catch (err: any) {
     return res.status(500).json({ error: responses.internal_error });
   }
 }
 
-function getAllIntegration(req: NextApiRequest, res: NextApiResponse) {
+function getUser(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const integrations = Database.getAllIntegrations();
-    return res.status(200).json(integrations);
+    const user = Database.getUser();
+    return res.status(200).json(user);
   } catch (err: any) {
     return res.status(500).json({ error: responses.internal_error });
   }
