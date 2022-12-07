@@ -49,15 +49,15 @@ function IntegrationManager() {
 
   const addIntegration = async (form: IntegrationFormType) => {
     try {
-      const integrationOptions: { [key: string]: string } = {};
+      const options: { [key: string]: string } = {};
 
       form.options.forEach((o) => {
-        integrationOptions[o.name] = '';
+        options[o.name] = '';
       });
 
       const body: { [key: string]: any } = {
         name: form.name,
-        options: integrationOptions
+        options
       };
 
       if (form.field_mappings) {

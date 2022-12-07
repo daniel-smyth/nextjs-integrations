@@ -116,7 +116,6 @@ export default class Database {
   }
 
   public static getAllIntegrations() {
-    console.log(this.integrations);
     return this.integrations;
   }
 }

@@ -101,3 +101,6 @@ describe('Integrations', () => {
     cy.contains(name);
   });
 });
+
+// Prevent TypeScript from reading file as legacy script
+export {};

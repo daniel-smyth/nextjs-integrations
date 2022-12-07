@@ -18,8 +18,8 @@
     "airbnb/hooks",
     "airbnb-typescript",
     "prettier",
-    "plugin:@next/next/recommended",
-    "plugin:cypress/recommended"
+    "plugin:cypress/recommended",
+    "plugin:@next/next/recommended"
   ],
   "rules": {
     "@typescript-eslint/no-unused-vars": 0,

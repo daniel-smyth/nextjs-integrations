@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
@@ -49,8 +49,8 @@ function IntegrationForm({ defaultValue }: IntegrationFormProps) {
   });
 
   const integrationSubmit = async (form: { [key: string]: string }) => {
-    // Disconnect if connected
     if (integration.connected) {
+      // Disconnect if connected
       let res: any = await fetch(`/api/integrations/${defaultValue.name}`, {
         method: 'DELETE'
       });
