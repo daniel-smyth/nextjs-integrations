@@ -17,10 +17,10 @@ export default nc<NextApiRequest, NextApiResponse>({
 
 async function postIntegration(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const integration = Database.addIntegration(req.body);
+    const integration = Database.createIntegration(JSON.parse(req.body));
 
     if (!integration) {
-      return res.status(409).json({ error: responses.existing_integration });
+      return res.status(409).json({ error: 'That integration already exists' });
     }
 
     return res.status(201).json(integration);

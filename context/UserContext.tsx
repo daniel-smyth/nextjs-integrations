@@ -1,35 +1,36 @@
 import React, {
   createContext,
   ReactNode,
+  useContext,
   useEffect,
   useMemo,
   useState
 } from 'react';
 import { User } from '../models/User';
 
-const UserContext = createContext<{ user: null | User } | null>(null);
+declare type UserContextType = {
+  user: null | User;
+};
+
+const UserContext = createContext<UserContextType | null>(null);
 
 function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<null | User>(null);
-  const userMemo = useMemo(() => ({ user }), [user]);
 
   useEffect(() => {
     const initialize = async () => {
       try {
-        let user: User; // eslint-disable-line @typescript-eslint/no-shadow
-
         let res: any = await fetch('/api/user', {
           method: 'GET'
         });
 
         if (res.status === 200) {
-          user = await res.json();
+          const response = await res.json();
+          setUser(response);
         } else {
           res = await res.json();
           throw new Error(res.error);
         }
-
-        setUser(user);
       } catch (err) {
         console.log(err); // eslint-disable-line no-console
         setUser(null);
@@ -39,9 +40,18 @@ function UserProvider({ children }: { children: ReactNode }) {
     initialize();
   }, []);
 
+  const userMemo = useMemo(() => ({ user }), [user]);
+
   return (
     <UserContext.Provider value={userMemo}>{children}</UserContext.Provider>
   );
 }
 
-export { UserContext, UserProvider };
+const useUser = () => {
+  const context = useContext(UserContext);
+  if (!context)
+    throw new Error('UserContext must be placed within UserProvider');
+  return context;
+};
+
+export { useUser, UserContext, UserProvider };

@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import styled from '@emotion/styled';
-
 import { spacing } from '@mui/system';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import MuiPaper from '@mui/material/Paper';
 import useMediaQuery from '@mui/material/useMediaQuery';
-
 import dashboardItems from '../components/sidebar/dashboardItems';
 import Footer from '../components/Footer';
 import GlobalStyle from '../components/GlobalStyle';

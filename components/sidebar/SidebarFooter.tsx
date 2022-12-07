@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from '@emotion/styled';
-
 import Grid from '@mui/material/Grid';
 
 const Footer = styled.div`

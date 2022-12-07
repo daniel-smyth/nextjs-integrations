@@ -1,10 +1,8 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-
 import styled from '@emotion/styled';
 import { rgba, darken } from 'polished';
-
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import Chip from '@mui/material/Chip';
 import Collapse from '@mui/material/Collapse';

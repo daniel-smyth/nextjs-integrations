@@ -1,9 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-
 import List from '@mui/material/List';
-
 import { SidebarItems } from '../../types/sidebar';
 import SidebarNavSection from './SidebarNavSection';
 

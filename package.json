@@ -1,5 +1,5 @@
 {
-  "name": "nextjs-intergrations",
+  "name": "nextjs-integrations",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,15 +8,14 @@
     "start": "next start",
     "lint": "next lint",
     "cypress": "cypress open",
-    "cypress:headless": "cypress run",
-    "e2e": "start-server-and-test start http://localhost:3000 cypress",
-    "e2e:headless": "start-server-and-test start http://localhost:3000 cypress:headless"
+    "cypress:headless": "cypress run"
   },
   "dependencies": {
     "@emotion/cache": "^11.10.5",
     "@emotion/react": "^11.10.5",
     "@emotion/server": "^11.10.0",
     "@emotion/styled": "^11.10.5",
+    "@hookform/resolvers": "^2.9.10",
     "@mui/icons-material": "^5.10.16",
     "@mui/lab": "^5.0.0-alpha.110",
     "@mui/material": "^5.10.16",
@@ -27,7 +26,9 @@
     "polished": "^4.2.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-feather": "^2.0.10"
+    "react-feather": "^2.0.10",
+    "react-hook-form": "^7.40.0",
+    "zod": "^3.19.1"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.0.6",

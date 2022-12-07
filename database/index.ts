@@ -8,45 +8,7 @@ export default class Database {
     given_name: 'Jane',
     family_name: 'Doe',
     email: 'jane@blinq.me',
-    integrations: [
-      {
-        name: 'Salesforce',
-        options: {
-          client_id: '',
-          client_secret: ''
-        },
-        connected: false
-      },
-      {
-        name: 'Zapier',
-        options: {
-          api_key: ''
-        },
-        connected: false
-      },
-      {
-        name: 'HubSpot',
-        options: {
-          tenant_domain: '',
-          client_id: '',
-          client_secret: ''
-        },
-        connected: false
-      }
-    ]
-  };
-
-  public static getUser(): User {
-    return this.user;
-  }
-
-  public static setUser(user: User) {
-    this.user = user;
-    return user;
-  }
-
-  public static getContacts(): Contact[] {
-    return [
+    contacts: [
       {
         id: '1234',
         given_name: 'Terry',
@@ -63,55 +25,72 @@ export default class Database {
         met_at_location: 'Melbourne, Australia',
         notes: 'Terry has a beard.'
       }
-    ];
+    ],
+    integrations: []
+  };
+
+  static integrations: Integration[] = [
+    {
+      name: 'Salesforce',
+      options: {
+        client_id: '',
+        client_secret: ''
+      },
+      connected: false
+    },
+    {
+      name: 'Zapier',
+      options: {
+        api_key: ''
+      },
+      connected: false
+    },
+    {
+      name: 'HubSpot',
+      options: {
+        tenant_domain: '',
+        client_id: '',
+        client_secret: ''
+      },
+      field_mappings: {},
+      connected: false
+    }
+  ];
+
+  public static getUser(): User {
+    return this.user;
+  }
+
+  public static setUser(user: User) {
+    this.user = user;
+    return user;
+  }
+
+  public static getContacts(): Contact[] {
+    return this.user.contacts;
   }
 
   public static getIntegration(id: string) {
-    const integration = this.user.integrations.find((i) => i.name === id);
-
-    return integration;
+    return this.user.integrations.find((i) => i.name === id);
   }
 
-  public static addIntegration(integration: Integration) {
+  public static connectIntegration(integration: Integration) {
     const exists = this.user.integrations.find(
       (i) => i.name === integration.name
     );
 
     if (exists) {
-      return false;
+      return undefined;
     }
+
+    integration.connected = true; // eslint-disable-line no-param-reassign
 
     this.user.integrations.push(integration);
 
     return integration;
   }
 
-  public static editIntegration(id: string, integration: Integration) {
-    const existingIntegration = this.user.integrations.find(
-      (i) => i.name === id
-    );
-
-    if (!existingIntegration) {
-      return undefined;
-    }
-
-    if (!existingIntegration.connected) {
-      integration.connected = true; // eslint-disable-line no-param-reassign
-    } else {
-      integration.connected = false; // eslint-disable-line no-param-reassign
-
-      Object.keys(integration.options).forEach((key) => {
-        integration.options[key] = ''; // eslint-disable-line no-param-reassign
-      });
-    }
-
-    const index = this.user.integrations.indexOf(existingIntegration);
-    this.user.integrations[index] = integration;
-
-    return integration;
-  }
-
-  public static deleteIntegration(id: string) {
+  public static disconnectIntegration(id: string) {
     const integration = this.user.integrations.find((i) => i.name === id);
 
     if (!integration) {
@@ -124,7 +103,19 @@ export default class Database {
     return true;
   }
 
+  public static createIntegration(integration: Integration) {
+    const exists = this.integrations.find((i) => i.name === integration.name);
+
+    if (exists) {
+      return false;
+    }
+
+    this.integrations.push(integration);
+
+    return integration;
+  }
+
   public static getAllIntegrations() {
-    return this.user.integrations;
+    return this.integrations;
   }
 }

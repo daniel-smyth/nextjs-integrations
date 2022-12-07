@@ -6,5 +6,5 @@ export default {
   success: 'success',
   internal_error: 'An internal error occurred. Please try again.',
   item_not_found: 'Item not found',
-  existing_integration: 'That integration already exists'
+  item_exists: 'Item aleady exists'
 };

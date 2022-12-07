@@ -3,30 +3,23 @@
   "given_name": "Jane",
   "family_name": "Doe",
   "email": "jane@blinq.me",
-  "integrations": [
+  "contacts": [
     {
-      "name": "Salesforce",
-      "options": {
-        "client_id": "",
-        "client_secret": ""
-      },
-      "connected": false
+      "id": "1234",
+      "given_name": "Terry",
+      "family_name": "Walker",
+      "email": "terry@waffles.co",
+      "met_at_location": "Melbourne, Australia",
+      "notes": "Terry has a beard."
     },
     {
-      "name": "Zapier",
-      "options": {
-        "api_key": ""
-      },
-      "connected": false
-    },
-    {
-      "name": "HubSpot",
-      "options": {
-        "tenant_domain": "",
-        "client_id": "",
-        "client_secret": ""
-      },
-      "connected": false
+      "id": "1235",
+      "given_name": "Terry",
+      "family_name": "Walker",
+      "email": "terry@waffles.co",
+      "met_at_location": "Melbourne, Australia",
+      "notes": "Terry has a beard."
     }
-  ]
+  ],
+  "integrations": []
 }
