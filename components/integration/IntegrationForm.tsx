@@ -88,11 +88,11 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
           connected: false
         };
 
-        // Populate new integration with values from frrom
+        // Populate new integration with values from form
         Object.keys(integration.options).forEach((option) => {
           body.options[option] = form[option];
 
-          // Delete option from form on add
+          // Delete option from form, leaving only field_mappings (if present)
           delete form[option]; // eslint-disable-line no-param-reassign
         });
 
