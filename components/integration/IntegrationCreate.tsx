@@ -2,27 +2,28 @@ import React, { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useFieldArray, useForm } from 'react-hook-form';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import Box from '@mui/material/Box';
-import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
+import CloseIcon from '@mui/icons-material/Close';
+import Collapse from '@mui/material/Collapse';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
+import { Integration } from '../../models/Integration';
 
-type IntegrationFormType = {
+type NewIntegrationForm = {
   name: string;
   options: { name: string }[];
   field_mappings: boolean;
 };
 
-function IntegrationManager() {
+function IntegrationCreate() {
   const [uploading, setUploading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [result, setResult] = useState<{ type: string; message: string }>();
 
   const schema = z
     .object({
@@ -33,7 +34,7 @@ function IntegrationManager() {
     })
     .passthrough();
 
-  const integrationForm = useForm<IntegrationFormType>({
+  const integrationForm = useForm<NewIntegrationForm>({
     defaultValues: {
       name: '',
       options: [],
@@ -47,20 +48,23 @@ function IntegrationManager() {
     name: 'options'
   });
 
-  const addIntegration = async (form: IntegrationFormType) => {
+  const addIntegration = async (form: NewIntegrationForm) => {
     try {
-      const options: { [key: string]: string } = {};
+      const body: Integration = {
+        name: form.name,
+        options: {},
+        connected: false
+      };
 
+      // Form integration options are stored as array, convert to object
+      const options: any = {};
       form.options.forEach((o) => {
         options[o.name] = '';
       });
-
-      const body: { [key: string]: any } = {
-        name: form.name,
-        options
-      };
+      body.options = options;
 
       if (form.field_mappings) {
+        // Add empty field mappings if integrations should have field mappings
         body.field_mappings = {};
       }
 
@@ -70,14 +74,15 @@ function IntegrationManager() {
       });
 
       if (res.status === 201) {
-        integrationForm.reset(); // If disconnecting, reset form values to ''
-        setSuccess(true);
+        integrationForm.reset();
+        setResult({ type: 'success', message: 'New integration created' });
       } else {
         res = await res.json();
         throw new Error(res.error);
       }
     } catch (err: any) {
       console.log(err.message); // eslint-disable-line no-console
+      setResult({ type: 'error', message: err.message });
     } finally {
       setUploading(false);
     }
@@ -102,7 +107,7 @@ function IntegrationManager() {
             <TextField
               {...integrationForm.register(`options.${i}.name`)}
               label="Option"
-              id={`integration-field-${i}`}
+              id={`integration-options-${i}`}
               fullWidth
             />
           </React.Fragment>
@@ -116,9 +121,9 @@ function IntegrationManager() {
             <Grid item xs={12} md={4}>
               <Button
                 variant="outlined"
+                fullWidth
                 disabled={uploading}
                 onClick={() => optionsArray.append({ name: '' })}
-                fullWidth
               >
                 Add Field
               </Button>
@@ -127,9 +132,9 @@ function IntegrationManager() {
               <Button
                 variant="outlined"
                 color="error"
+                fullWidth
                 disabled={uploading}
                 onClick={() => optionsArray.remove(-1)}
-                fullWidth
               >
                 Remove Field
               </Button>
@@ -145,24 +150,24 @@ function IntegrationManager() {
             </Grid>
           </Grid>
         </Box>
-        <Collapse in={success}>
+        <Collapse in={!!result}>
           <Alert
-            severity="success"
+            severity={result?.type as AlertColor}
             action={
-              <IconButton color="inherit" onClick={() => setSuccess(false)}>
+              <IconButton color="inherit" onClick={() => setResult(undefined)}>
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }
           >
-            <strong>Timeseries created</strong>
+            <strong>{result?.message}</strong>
           </Alert>
         </Collapse>
         <Button type="submit" variant="contained" disabled={uploading}>
-          {uploading ? 'Changing Integration...' : 'Create Integration'}
+          {uploading ? 'Adding Integration...' : 'Create Integration'}
         </Button>
       </Stack>
     </form>
   );
 }
 
-export default IntegrationManager;
+export default IntegrationCreate;

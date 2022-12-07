@@ -9,7 +9,7 @@ describe('Integrations', () => {
   const integrationOptions = Object.keys(integration.options);
   const integrationFieldMaps = Object.keys(user.contacts[0]);
 
-  it('display integration and its options', () => {
+  it('displays all integrations and their options', () => {
     cy.visit('http://localhost:3000/');
 
     // Integration option inputs
@@ -25,7 +25,7 @@ describe('Integrations', () => {
     }
   });
 
-  it('connect integration and disable inputs', () => {
+  it('connects an integration and then disable its inputs', () => {
     // Populate integration options
     integrationOptions.forEach((o) => {
       cy.get(`[id="${integration.name}-${o}"]`).type(`${o}-testinput`);
@@ -41,15 +41,15 @@ describe('Integrations', () => {
     cy.get('button').contains(`Connect ${integration.name}`).click();
 
     // Inputs are disabled
-    integrationOptions.forEach((option) => {
-      cy.get(`[id="${integration.name}-${option}"]`).should('be.disabled');
+    integrationOptions.forEach((o) => {
+      cy.get(`[id="${integration.name}-${o}"]`).should('be.disabled');
     });
     integrationFieldMaps.forEach((map) => {
       cy.get(`[id="${integration.name}-${map}"]`).should('be.disabled');
     });
   });
 
-  it('disconnects an integration option and clears inputs', () => {
+  it('disconnects an integration option and clears its inputs', () => {
     cy.get('button').contains(`Disconnect ${integration.name}`).click();
 
     // Integration options should be empty after disconnect
@@ -65,7 +65,7 @@ describe('Integrations', () => {
     }
   });
 
-  it('tries connect with duplicate mappings', () => {
+  it('tries connect an integration with duplicate mappings', () => {
     // Populate integration options with duplicates
     integrationOptions.forEach((o) => {
       cy.get(`[id="${integration.name}-${o}"]`).type('testinput');
@@ -90,7 +90,7 @@ describe('Integrations', () => {
 
     cy.get(`button`).contains('Add Field').click();
 
-    cy.get(`[id="integration-field-0"]`).type('api_key');
+    cy.get(`[id="integration-options-0"]`).type('api_key');
 
     cy.get(`[id="new-integration-mappings"]`).click();
 
@@ -101,6 +101,3 @@ describe('Integrations', () => {
     cy.contains(name);
   });
 });
-
-// Prevent TypeScript from reading file as legacy script
-export {};

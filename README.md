@@ -6,7 +6,7 @@ For desktop and mobile.
 
 Extensible so more integration partners can be added. See **Add integration** at bottom of the page and:
 
-**./components/integration/IntegrationManager.tsx**
+**./components/integration/IntegrationCreate.tsx**
 
 No empty or duplicate strings are allowed for any integrations.
 

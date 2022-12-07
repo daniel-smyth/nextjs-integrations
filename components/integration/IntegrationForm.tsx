@@ -13,25 +13,29 @@ import { useUser } from '../../context/UserContext';
 import { Integration } from '../../models/Integration';
 
 interface IntegrationFormProps {
-  defaultValue: Integration;
+  defaultValues: Integration;
 }
 
-function IntegrationForm({ defaultValue }: IntegrationFormProps) {
+function IntegrationForm({ defaultValues }: IntegrationFormProps) {
   const { user } = useUser();
   const initialValue = user?.integrations.find(
-    (i) => i.name === defaultValue.name
+    (integration) => integration.name === defaultValues.name
   );
-  const [integration, setIntegration] = useState(initialValue || defaultValue);
+  const [integration, setIntegration] = useState(initialValue || defaultValues);
   const [uploading, setUploading] = useState(false);
 
   const getSchema = () => {
-    const schemaOptions: { [key: string]: z.ZodString } = {};
+    const schemaOptions: {
+      [key: string]: z.ZodString;
+    } = {};
 
+    // Add integrations's options to schema
     Object.keys(integration.options).forEach((option) => {
       schemaOptions[option] = z.string().min(1);
     });
 
     if (integration.field_mappings) {
+      // Add integrations's mappings (if has mappings)
       Object.keys(integration.field_mappings).forEach((field_mapping) => {
         schemaOptions[field_mapping] = z.string().min(1);
       });
@@ -48,97 +52,104 @@ function IntegrationForm({ defaultValue }: IntegrationFormProps) {
     resolver: zodResolver(getSchema())
   });
 
-  const integrationSubmit = async (form: { [key: string]: string }) => {
+  const integrationFormSubmit = async (form: { [key: string]: string }) => {
     if (integration.connected) {
-      // Disconnect if connected
-      let res: any = await fetch(`/api/integrations/${defaultValue.name}`, {
+      // Disconnect - If connected disconnect and delete on submit
+      let res: any = await fetch(`/api/integrations/${integration.name}`, {
         method: 'DELETE'
       });
 
       if (res.status === 200) {
-        setIntegration(defaultValue);
+        setIntegration(defaultValues);
         integrationForm.reset();
       } else {
         res = await res.json();
         throw new Error(res.error);
       }
-      return;
-    }
 
-    const hasDuplicates =
-      new Set(Object.values(form)).size !== Object.values(form).length;
+      // End submission
+    } else {
+      const duplicateValues =
+        new Set(Object.values(form)).size !== Object.values(form).length;
 
-    if (hasDuplicates) {
-      integrationForm.setError('test', {
-        type: 'custom',
-        message: 'Integration values cannot be the same'
-      });
-      return;
-    }
+      if (duplicateValues) {
+        // No duplicate integration values allowed
+        integrationForm.setError('test', {
+          type: 'custom',
+          message: 'Integration values cannot be the same'
+        });
 
-    const body: { [key: string]: any } = {
-      name: defaultValue.name,
-      options: {}
-    };
-
-    // Populate integration with form values
-    Object.keys(integration.options).forEach((option) => {
-      body.options[option] = form[option];
-      delete form[option]; // eslint-disable-line no-param-reassign
-    });
-
-    if (integration.field_mappings) {
-      body.field_mappings = {};
-
-      // By this point, the only remaining fields are field_mappings
-      Object.keys(form).forEach((field_mapping) => {
-        body.field_mappings[field_mapping] = form[field_mapping];
-      });
-    }
-
-    try {
-      setUploading(true);
-
-      let res: any = await fetch(`/api/integrations/${defaultValue.name}`, {
-        method: 'POST',
-        body: JSON.stringify(body)
-      });
-
-      if (res.status === 200) {
-        const reponse = await res.json();
-        setIntegration(reponse);
+        // End submission
       } else {
-        res = await res.json();
-        throw new Error(res.error);
+        // Connect - Not connected and no duplicates, add new integration
+        const body: Integration = {
+          name: integration.name,
+          options: {},
+          connected: false
+        };
+
+        // Populate new integration with values from frrom
+        Object.keys(integration.options).forEach((option) => {
+          body.options[option] = form[option];
+
+          // Delete option from form on add
+          delete form[option]; // eslint-disable-line no-param-reassign
+        });
+
+        if (integration.field_mappings) {
+          body.field_mappings = {};
+
+          // By here, only remaining form values are integration's field_mappings
+          Object.keys(form).forEach((field_mapping) => {
+            body.field_mappings![field_mapping] = form[field_mapping];
+          });
+        }
+
+        try {
+          setUploading(true);
+
+          let res: any = await fetch(`/api/integrations/${integration.name}`, {
+            method: 'POST',
+            body: JSON.stringify(body)
+          });
+
+          if (res.status === 200) {
+            const reponse = await res.json();
+            setIntegration(reponse);
+          } else {
+            res = await res.json();
+            throw new Error(res.error);
+          }
+        } catch (err: any) {
+          console.log(err.message); // eslint-disable-line no-console
+        } finally {
+          setUploading(false);
+        }
       }
-    } catch (err: any) {
-      console.log(err.message); // eslint-disable-line no-console
-    } finally {
-      setUploading(false);
     }
   };
 
   return (
-    <form onSubmit={integrationForm.handleSubmit(integrationSubmit)}>
+    <form onSubmit={integrationForm.handleSubmit(integrationFormSubmit)}>
       <Typography variant="h3" gutterBottom sx={{ pb: 4 }}>
-        {defaultValue.name}
+        {integration.name}
       </Typography>
       <Stack spacing={4}>
         {Object.keys(integration.options).map((option, i) => (
-          <div key={option}>
+          <React.Fragment key={option}>
             <TextField
               {...integrationForm.register(option, {
                 required: true
               })}
               label={option}
-              id={`${defaultValue.name}-${option}`}
+              id={`${integration.name}-${option}`}
               disabled={integration.connected === true}
               fullWidth
             />
             {integrationForm.formState.errors[option] && (
               <Alert severity="warning">{option} cannot be empty</Alert>
             )}
-          </div>
+          </React.Fragment>
         ))}
         {integration.field_mappings && (
           <>
@@ -149,17 +160,17 @@ function IntegrationForm({ defaultValue }: IntegrationFormProps) {
                 rowSpacing={2}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                {Object.keys(user?.contacts[0]!).map((field) => (
-                  <React.Fragment key={field}>
+                {Object.keys(user?.contacts[0]!).map((contactField) => (
+                  <React.Fragment key={contactField}>
                     <Grid item xs={6}>
-                      <TextField value={field} fullWidth disabled />
+                      <TextField value={contactField} fullWidth disabled />
                     </Grid>
                     <Grid item xs={6}>
                       <TextField
-                        {...integrationForm.register(field, {
+                        {...integrationForm.register(contactField, {
                           required: true
                         })}
-                        id={`${defaultValue.name}-${field}`}
+                        id={`${integration.name}-${contactField}`}
                         fullWidth
                         disabled={integration.connected === true}
                       />
@@ -182,10 +193,10 @@ function IntegrationForm({ defaultValue }: IntegrationFormProps) {
           disabled={uploading}
         >
           {uploading
-            ? 'Changing Integration...'
+            ? 'Connecting Integration...'
             : !integration.connected
-            ? `Connect ${defaultValue.name}`
-            : `Disconnect ${defaultValue.name}`}
+            ? `Connect ${integration.name}`
+            : `Disconnect ${integration.name}`}
         </Button>
       </Stack>
     </form>

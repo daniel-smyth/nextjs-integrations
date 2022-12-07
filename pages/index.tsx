@@ -14,7 +14,7 @@ import Typography from '@mui/material/Typography';
 import { useUser } from '../context/UserContext';
 import DashboardLayout from '../layouts/Dashboard';
 import IntegrationForm from '../components/integration/IntegrationForm';
-import IntegrationManager from '../components/integration/IntegrationManager';
+import IntegrationCreate from '../components/integration/IntegrationCreate';
 import { Integration } from '../models/Integration';
 
 const Spacer = styled.div(spacing);
@@ -83,8 +83,8 @@ function Intergrations() {
         let res: any = await fetch(`/api/integrations/`);
 
         if (res.status === 200) {
-          const reponse = await res.json();
-          setIntegrations(reponse);
+          const response = await res.json();
+          setIntegrations(response);
         } else {
           res = await res.json();
           throw new Error(res.error);
@@ -102,7 +102,7 @@ function Intergrations() {
   }, []);
 
   return (
-    <>
+    <Stack spacing={6}>
       <Card>
         <CardHeader
           title={<Typography variant="h2">Manage Integrations</Typography>}
@@ -111,7 +111,7 @@ function Intergrations() {
           <Stack spacing={12}>
             {integrations.map((integration) => (
               <IntegrationForm
-                defaultValue={integration}
+                defaultValues={integration}
                 key={integration.name}
               />
             ))}
@@ -124,11 +124,11 @@ function Intergrations() {
         />
         <CardContent>
           <Stack spacing={5}>
-            <IntegrationManager />
+            <IntegrationCreate />
           </Stack>
         </CardContent>
       </Card>
-    </>
+    </Stack>
   );
 }
 
