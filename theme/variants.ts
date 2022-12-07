@@ -70,35 +70,36 @@ const defaultVariant = {
   }
 } as VariantType;
 
-const blueVariant = merge(defaultVariant, {
-  name: 'BLUE',
+const darkVariant = merge(defaultVariant, {
+  name: 'DARk',
   palette: {
-    mode: 'light'
-  },
-  sidebar: {
-    color: '#FFF',
-    background: customBlue[700],
-    header: {
-      color: '#FFF',
-      background: customBlue[800],
-      brand: {
-        color: '#FFFFFF'
-      }
+    mode: 'dark',
+    primary: {
+      main: customBlue[600],
+      contrastText: '#FFF'
     },
-    footer: {
-      color: '#FFF',
-      background: customBlue[800],
-      online: {
-        background: '#FFF'
-      }
+    background: {
+      default: '#1B2635',
+      paper: '#233044'
     },
-    badge: {
-      color: '#000',
-      background: '#FFF'
+    text: {
+      primary: 'rgba(255, 255, 255, 0.95)',
+      secondary: 'rgba(255, 255, 255, 0.5)'
     }
+  },
+  header: {
+    color: grey[300],
+    background: '#1B2635',
+    search: {
+      color: grey[200]
+    }
+  },
+  footer: {
+    color: grey[300],
+    background: '#233044'
   }
 });
 
-const variants: Array<VariantType> = [defaultVariant, blueVariant];
+const variants: Array<VariantType> = [defaultVariant, darkVariant];
 
 export default variants;

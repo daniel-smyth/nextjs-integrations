@@ -26,36 +26,36 @@ export default class Database {
         notes: 'Terry has a beard.'
       }
     ],
-    integrations: [
-      {
-        name: 'Salesforce',
-        options: {
-          client_id: '',
-          client_secret: ''
-        },
-        connected: false
-      },
-      {
-        name: 'Zapier',
-        options: {
-          api_key: ''
-        },
-        connected: false
-      },
-      {
-        name: 'HubSpot',
-        options: {
-          tenant_domain: '',
-          client_id: '',
-          client_secret: ''
-        },
-        field_mappings: {
-          first_name: 'first_name'
-        },
-        connected: false
-      }
-    ]
+    integrations: []
   };
+
+  static integrations: Integration[] = [
+    {
+      name: 'Salesforce',
+      options: {
+        client_id: '',
+        client_secret: ''
+      },
+      connected: false
+    },
+    {
+      name: 'Zapier',
+      options: {
+        api_key: ''
+      },
+      connected: false
+    },
+    {
+      name: 'HubSpot',
+      options: {
+        tenant_domain: '',
+        client_id: '',
+        client_secret: ''
+      },
+      field_mappings: {},
+      connected: false
+    }
+  ];
 
   public static getUser(): User {
     return this.user;
@@ -71,53 +71,26 @@ export default class Database {
   }
 
   public static getIntegration(id: string) {
-    const integration = this.user.integrations.find((i) => i.name === id);
-
-    return integration;
+    return this.user.integrations.find((i) => i.name === id);
   }
 
-  public static addIntegration(integration: Integration) {
+  public static connectIntegration(integration: Integration) {
     const exists = this.user.integrations.find(
       (i) => i.name === integration.name
     );
 
     if (exists) {
-      return false;
+      return undefined;
     }
+
+    integration.connected = true; // eslint-disable-line no-param-reassign
 
     this.user.integrations.push(integration);
 
     return integration;
   }
 
-  public static editIntegration(id: string, integration: Integration) {
-    const existingIntegration = this.user.integrations.find(
-      (i) => i.name === id
-    );
-
-    if (!existingIntegration) {
-      return undefined;
-    }
-
-    if (!existingIntegration.connected) {
-      // Simulate connect
-      integration.connected = true; // eslint-disable-line no-param-reassign
-    } else {
-      // Simulating disconnect
-      integration.connected = false; // eslint-disable-line no-param-reassign
-
-      Object.keys(integration.options).forEach((key) => {
-        integration.options[key] = ''; // eslint-disable-line no-param-reassign
-      });
-    }
-
-    const index = this.user.integrations.indexOf(existingIntegration);
-    this.user.integrations[index] = integration;
-
-    return integration;
-  }
-
-  public static deleteIntegration(id: string) {
+  public static disconnectIntegration(id: string) {
     const integration = this.user.integrations.find((i) => i.name === id);
 
     if (!integration) {
@@ -130,7 +103,20 @@ export default class Database {
     return true;
   }
 
+  public static createIntegration(integration: Integration) {
+    const exists = this.integrations.find((i) => i.name === integration.name);
+
+    if (exists) {
+      return false;
+    }
+
+    this.integrations.push(integration);
+
+    return integration;
+  }
+
   public static getAllIntegrations() {
-    return this.user.integrations;
+    console.log(this.integrations);
+    return this.integrations;
   }
 }

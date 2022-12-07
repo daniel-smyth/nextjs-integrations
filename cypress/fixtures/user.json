@@ -21,33 +21,5 @@
       "notes": "Terry has a beard."
     }
   ],
-  "integrations": [
-    {
-      "name": "Salesforce",
-      "options": {
-        "client_id": "",
-        "client_secret": ""
-      },
-      "connected": false
-    },
-    {
-      "name": "Zapier",
-      "options": {
-        "api_key": ""
-      },
-      "connected": false
-    },
-    {
-      "name": "HubSpot",
-      "options": {
-        "tenant_domain": "",
-        "client_id": "",
-        "client_secret": ""
-      },
-      "field_mappings": {
-        "given_name": "given_name_HubSpot"
-      },
-      "connected": false
-    }
-  ]
+  "integrations": []
 }

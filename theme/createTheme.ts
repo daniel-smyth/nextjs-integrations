@@ -14,7 +14,7 @@ const createTheme = (name: string) => {
 
   if (!themeConfig) {
     // eslint-disable-next-line prefer-destructuring
-    themeConfig = variants[0];
+    themeConfig = variants.at(-1)!;
   }
 
   return createMuiTheme(
@@ -25,14 +25,14 @@ const createTheme = (name: string) => {
       components,
       typography,
       shadows,
-      palette: themeConfig.palette,
+      palette: themeConfig.palette
     },
     {
       name: themeConfig.name,
       header: themeConfig.header,
       footer: themeConfig.footer,
-      sidebar: themeConfig.sidebar,
-    },
+      sidebar: themeConfig.sidebar
+    }
   );
 };
 

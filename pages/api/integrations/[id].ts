@@ -13,7 +13,7 @@ export default nc<NextApiRequest, NextApiResponse>({
   }
 })
   .get(getIntegration)
-  .put(putIntegration)
+  .post(postIntegration)
   .delete(deleteIntegration);
 
 async function getIntegration(req: NextApiRequest, res: NextApiResponse) {
@@ -31,16 +31,12 @@ async function getIntegration(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-async function putIntegration(req: NextApiRequest, res: NextApiResponse) {
+async function postIntegration(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const { id } = req.query;
-    const integration = Database.editIntegration(
-      id as string,
-      JSON.parse(req.body)
-    );
+    const integration = Database.connectIntegration(JSON.parse(req.body));
 
     if (!integration) {
-      return res.status(404).json({ error: responses.item_not_found });
+      return res.status(409).json({ error: responses.item_exists });
     }
 
     return res.status(200).json(integration);
@@ -52,7 +48,7 @@ async function putIntegration(req: NextApiRequest, res: NextApiResponse) {
 async function deleteIntegration(req: NextApiRequest, res: NextApiResponse) {
   try {
     const { id } = req.query;
-    const result = Database.deleteIntegration(id as string);
+    const result = Database.disconnectIntegration(id as string);
 
     if (!result) {
       return res.status(404).json({ error: responses.item_not_found });
