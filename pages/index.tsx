@@ -74,7 +74,7 @@ function About() {
   );
 }
 
-function Intergrations() {
+function Integrations() {
   const [integrations, setIntegrations] = useState<Integration[]>([]);
 
   useEffect(() => {
@@ -150,7 +150,7 @@ function Profile() {
           <About />
         </Grid>
         <Grid item xs={12} lg={8} xl={9}>
-          <Intergrations />
+          <Integrations />
         </Grid>
       </Grid>
     </DashboardLayout>
