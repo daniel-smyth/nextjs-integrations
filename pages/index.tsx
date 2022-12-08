@@ -13,7 +13,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useUser } from '../context/UserContext';
 import DashboardLayout from '../layouts/Dashboard';
-import IntegrationForm from '../components/integration/IntegrationForm';
+import IntegrationConnect from '../components/integration/IntegrationConnect';
 import IntegrationCreate from '../components/integration/IntegrationCreate';
 import { Integration } from '../models/Integration';
 
@@ -110,7 +110,7 @@ function Integrations() {
         <CardContent>
           <Stack spacing={12}>
             {integrations.map((integration) => (
-              <IntegrationForm
+              <IntegrationConnect
                 defaultValues={integration}
                 key={integration.name}
               />

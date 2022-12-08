@@ -15,11 +15,11 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { Integration } from '../../models/Integration';
 
-interface IntegrationCreateForm {
+type IntegrationCreateForm = {
   name: string;
   options: { name: string }[];
   field_mappings: boolean;
-}
+};
 
 function IntegrationCreate() {
   const [uploading, setUploading] = useState(false);

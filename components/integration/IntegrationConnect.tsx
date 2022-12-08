@@ -12,11 +12,15 @@ import Typography from '@mui/material/Typography';
 import { useUser } from '../../context/UserContext';
 import { Integration } from '../../models/Integration';
 
-interface IntegrationFormProps {
+type IntegrationConnectForm = {
+  [key: string]: string;
+};
+
+interface IntegrationConnectProps {
   defaultValues: Integration;
 }
 
-function IntegrationForm({ defaultValues }: IntegrationFormProps) {
+function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
   const { user } = useUser();
   const initialValue = user?.integrations.find(
     (i) => i.name === defaultValues.name
@@ -44,12 +48,12 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
     return z.object(schema).passthrough();
   };
 
-  const integrationForm = useForm({
+  const integrationForm = useForm<IntegrationConnectForm>({
     defaultValues: { ...integration.options, ...integration.field_mappings },
     resolver: zodResolver(getSchema())
   });
 
-  const integrationFormSubmit = async (form: { [key: string]: string }) => {
+  const integrationFormSubmit = async (form: IntegrationConnectForm) => {
     if (integration.connected) {
       // Disconnect - If connected disconnect and delete on submit
       let res: any = await fetch(`/api/integrations/${integration.name}`, {
@@ -134,6 +138,7 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
       <Typography variant="h3" gutterBottom sx={{ pb: 4 }}>
         {integration.name}
       </Typography>
+
       <Stack spacing={4}>
         {Object.keys(integration.options).map((option) => (
           <React.Fragment key={option}>
@@ -151,6 +156,7 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
             )}
           </React.Fragment>
         ))}
+
         {integration.field_mappings && (
           <>
             <Typography variant="h5">Mappings</Typography>
@@ -203,4 +209,4 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
   );
 }
 
-export default IntegrationForm;
+export default IntegrationConnect;
