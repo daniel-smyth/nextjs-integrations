@@ -27,9 +27,6 @@ const Brand = styled(ListItemButton)`
   cursor: pointer;
   flex-grow: 0;
   min-height: 64px;
-  &:hover {
-    background-color: ${(props) => props.theme.palette.secondary.main};
-  }
 `;
 
 export interface SidebarProps {

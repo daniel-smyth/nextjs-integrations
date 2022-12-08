@@ -15,11 +15,11 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { Integration } from '../../models/Integration';
 
-type NewIntegrationForm = {
+interface IntegrationCreateForm {
   name: string;
   options: { name: string }[];
   field_mappings: boolean;
-};
+}
 
 function IntegrationCreate() {
   const [uploading, setUploading] = useState(false);
@@ -30,11 +30,11 @@ function IntegrationCreate() {
       name: z
         .string()
         .min(1)
-        .regex(/^'?\p{L}+(?:[' ]\p{L}+)*'?$/u)
+        .regex(/^(\d|\w)+$/u)
     })
     .passthrough();
 
-  const integrationForm = useForm<NewIntegrationForm>({
+  const integrationForm = useForm<IntegrationCreateForm>({
     defaultValues: {
       name: '',
       options: [],
@@ -48,7 +48,7 @@ function IntegrationCreate() {
     name: 'options'
   });
 
-  const addIntegration = async (form: NewIntegrationForm) => {
+  const addIntegration = async (form: IntegrationCreateForm) => {
     try {
       const body: Integration = {
         name: form.name,
@@ -63,8 +63,8 @@ function IntegrationCreate() {
       });
       body.options = options;
 
+      // Add empty field mappings if integrations should have field mappings
       if (form.field_mappings) {
-        // Add empty field mappings if integrations should have field mappings
         body.field_mappings = {};
       }
 
@@ -100,7 +100,9 @@ function IntegrationCreate() {
           fullWidth
         />
         {integrationForm.formState.errors.name && (
-          <Alert severity="warning">Name cannot only be characters</Alert>
+          <Alert severity="warning">
+            Name can only be characters and numbers
+          </Alert>
         )}
         {optionsArray.fields.map((f, i) => (
           <React.Fragment key={JSON.stringify(f)}>
@@ -154,7 +156,11 @@ function IntegrationCreate() {
           <Alert
             severity={result?.type as AlertColor}
             action={
-              <IconButton color="inherit" onClick={() => setResult(undefined)}>
+              <IconButton
+                color="inherit"
+                size="small"
+                onClick={() => setResult(undefined)}
+              >
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             }

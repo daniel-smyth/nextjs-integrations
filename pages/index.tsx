@@ -83,8 +83,8 @@ function Integrations() {
         let res: any = await fetch(`/api/integrations/`);
 
         if (res.status === 200) {
-          const response = await res.json();
-          setIntegrations(response);
+          const allIntegrations = await res.json();
+          setIntegrations(allIntegrations);
         } else {
           res = await res.json();
           throw new Error(res.error);

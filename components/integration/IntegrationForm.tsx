@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -19,36 +19,33 @@ interface IntegrationFormProps {
 function IntegrationForm({ defaultValues }: IntegrationFormProps) {
   const { user } = useUser();
   const initialValue = user?.integrations.find(
-    (integration) => integration.name === defaultValues.name
+    (i) => i.name === defaultValues.name
   );
   const [integration, setIntegration] = useState(initialValue || defaultValues);
   const [uploading, setUploading] = useState(false);
 
   const getSchema = () => {
-    const schemaOptions: {
+    const schema: {
       [key: string]: z.ZodString;
     } = {};
 
-    // Add integrations's options to schema
-    Object.keys(integration.options).forEach((option) => {
-      schemaOptions[option] = z.string().min(1);
+    // Add integration's options to schema
+    Object.keys(integration.options).forEach((options) => {
+      schema[options] = z.string().min(1);
     });
 
     if (integration.field_mappings) {
-      // Add integrations's mappings (if has mappings)
+      // Add integration's mappings (if has mappings) to schema
       Object.keys(integration.field_mappings).forEach((field_mapping) => {
-        schemaOptions[field_mapping] = z.string().min(1);
+        schema[field_mapping] = z.string().min(1);
       });
     }
 
-    return z.object(schemaOptions).passthrough();
+    return z.object(schema).passthrough();
   };
 
   const integrationForm = useForm({
-    defaultValues: {
-      ...integration.options,
-      ...integration.field_mappings
-    },
+    defaultValues: { ...integration.options, ...integration.field_mappings },
     resolver: zodResolver(getSchema())
   });
 
@@ -60,28 +57,33 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
       });
 
       if (res.status === 200) {
+        const newFormValues = {
+          ...defaultValues.options // Reset values to ''
+        };
+        if (integration.field_mappings) {
+          Object.keys(user?.contacts[0]!).forEach((field_mapping) => {
+            newFormValues[field_mapping] = ''; // Reset values to ''
+          });
+        }
+        integrationForm.reset(newFormValues);
         setIntegration(defaultValues);
-        integrationForm.reset();
       } else {
         res = await res.json();
         throw new Error(res.error);
       }
-
-      // End submission
     } else {
-      const duplicateValues =
+      // No duplicate integration values allowed
+      const duplicateEntries =
         new Set(Object.values(form)).size !== Object.values(form).length;
 
-      if (duplicateValues) {
-        // No duplicate integration values allowed
-        integrationForm.setError('test', {
+      if (duplicateEntries) {
+        integrationForm.setError('duplicates', {
           type: 'custom',
           message: 'Integration values cannot be the same'
         });
-
-        // End submission
-      } else {
-        // Connect - Not connected and no duplicates, add new integration
+      }
+      // Connect - Not connected and no duplicates, add new integration
+      else {
         const body: Integration = {
           name: integration.name,
           options: {},
@@ -91,14 +93,12 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
         // Populate new integration with values from form
         Object.keys(integration.options).forEach((option) => {
           body.options[option] = form[option];
-
           // Delete option from form, leaving only field_mappings (if present)
           delete form[option]; // eslint-disable-line no-param-reassign
         });
 
         if (integration.field_mappings) {
           body.field_mappings = {};
-
           // By here, only remaining form values are integration's field_mappings
           Object.keys(form).forEach((field_mapping) => {
             body.field_mappings![field_mapping] = form[field_mapping];
@@ -114,8 +114,8 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
           });
 
           if (res.status === 200) {
-            const reponse = await res.json();
-            setIntegration(reponse);
+            const connectedIntegration = await res.json();
+            setIntegration(connectedIntegration);
           } else {
             res = await res.json();
             throw new Error(res.error);
@@ -135,7 +135,7 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
         {integration.name}
       </Typography>
       <Stack spacing={4}>
-        {Object.keys(integration.options).map((option, i) => (
+        {Object.keys(integration.options).map((option) => (
           <React.Fragment key={option}>
             <TextField
               {...integrationForm.register(option, {
@@ -147,7 +147,7 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
               fullWidth
             />
             {integrationForm.formState.errors[option] && (
-              <Alert severity="warning">{option} cannot be empty</Alert>
+              <Alert severity="warning">Invalid {option}</Alert>
             )}
           </React.Fragment>
         ))}
@@ -181,9 +181,9 @@ function IntegrationForm({ defaultValues }: IntegrationFormProps) {
             </Box>
           </>
         )}
-        {integrationForm.formState.errors.test && (
+        {integrationForm.formState.errors.duplicates && (
           <Alert severity="warning">
-            {integrationForm.formState.errors.test.message}
+            {integrationForm.formState.errors.duplicates.message}
           </Alert>
         )}
         <Button
