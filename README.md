@@ -14,6 +14,12 @@ No empty or duplicate strings are allowed for any integrations.
 
 Testing implemented with cypress.
 
+First start Next.js server.
+
+Run `npm run dev` or for production `npm run build` then `npm run start`
+
+Start cypress.
+
 Run `npm run cypress`
 
 For headless testing.
