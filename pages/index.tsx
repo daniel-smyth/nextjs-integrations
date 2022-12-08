@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, Tag, User, Users } from 'react-feather';
+import { Tag, User, Users } from 'react-feather';
 import styled from '@emotion/styled';
 import { spacing } from '@mui/system';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
