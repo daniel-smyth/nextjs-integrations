@@ -8,8 +8,6 @@ Extensible so more integration partners can be added. See **Add integration** at
 
 **./components/integration/IntegrationCreate.tsx**
 
-No empty or duplicate strings are allowed for any integrations.
-
 ## E2E Testing
 
 Testing implemented with cypress.
