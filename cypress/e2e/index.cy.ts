@@ -1,8 +1,9 @@
-import Database from '../../database';
+import UserDatabase from '../../database/User';
+import IntegrationDatabase from '../../database/Integration';
 
 describe('Integrations', () => {
-  const user = Database.getUser();
-  const integrations = Database.getAllIntegrations();
+  const user = UserDatabase.get();
+  const integrations = IntegrationDatabase.getAll();
 
   // Get integration with mappings for full coverage
   const integration = integrations.find((i) => i.field_mappings);

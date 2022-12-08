@@ -2,7 +2,7 @@ import { Contact } from '../models/Contact';
 import { Integration } from '../models/Integration';
 import { User } from '../models/User';
 
-export default class Database {
+export default class UserDatabase {
   static user: User = {
     id: '12345',
     given_name: 'Jane',
@@ -29,52 +29,15 @@ export default class Database {
     integrations: []
   };
 
-  static integrations: Integration[] = [
-    {
-      name: 'Salesforce',
-      options: {
-        client_id: '',
-        client_secret: ''
-      },
-      connected: false
-    },
-    {
-      name: 'Zapier',
-      options: {
-        api_key: ''
-      },
-      connected: false
-    },
-    {
-      name: 'HubSpot',
-      options: {
-        tenant_domain: '',
-        client_id: '',
-        client_secret: ''
-      },
-      field_mappings: {},
-      connected: false
-    }
-  ];
-
-  public static getUser(): User {
+  public static get(): User {
     return this.user;
-  }
-
-  public static setUser(user: User) {
-    this.user = user;
-    return user;
-  }
-
-  public static getContacts(): Contact[] {
-    return this.user.contacts;
   }
 
   public static getIntegration(id: string) {
     return this.user.integrations.find((i) => i.name === id);
   }
 
-  public static connectIntegration(integration: Integration) {
+  public static insertIntegration(integration: Integration) {
     const exists = this.user.integrations.find(
       (i) => i.name === integration.name
     );
@@ -90,7 +53,7 @@ export default class Database {
     return integration;
   }
 
-  public static disconnectIntegration(id: string) {
+  public static deleteIntegration(id: string) {
     const integration = this.user.integrations.find((i) => i.name === id);
 
     if (!integration) {
@@ -101,21 +64,5 @@ export default class Database {
     this.user.integrations.splice(index, 1);
 
     return true;
-  }
-
-  public static createIntegration(integration: Integration) {
-    const exists = this.integrations.find((i) => i.name === integration.name);
-
-    if (exists) {
-      return false;
-    }
-
-    this.integrations.push(integration);
-
-    return integration;
-  }
-
-  public static getAllIntegrations() {
-    return this.integrations;
   }
 }
