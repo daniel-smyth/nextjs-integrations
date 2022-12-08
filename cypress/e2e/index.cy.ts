@@ -26,7 +26,7 @@ describe('Integrations', () => {
     }
   });
 
-  it('connects an integration and then disable its inputs', () => {
+  it('connects an integration and disable inputs', () => {
     // Populate integration options
     integrationOptions.forEach((o) => {
       cy.get(`[id="${integration.name}-${o}"]`).type(`${o}-testinput`);
@@ -40,6 +40,8 @@ describe('Integrations', () => {
     }
 
     cy.get('button').contains(`Connect ${integration.name}`).click();
+
+    cy.reload();
 
     // Inputs are disabled
     integrationOptions.forEach((o) => {
@@ -97,7 +99,7 @@ describe('Integrations', () => {
 
     cy.get('button').contains(`Create Integration`).click();
 
-    cy.visit('http://localhost:3000/');
+    cy.reload();
 
     cy.contains(name);
   });
