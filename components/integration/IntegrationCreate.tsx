@@ -31,7 +31,7 @@ function IntegrationCreate() {
     }
   });
 
-  const integrationOptionArray = useFieldArray({
+  const integrationFormOptionsArray = useFieldArray({
     name: 'options',
     control: integrationForm.control
   });
@@ -83,7 +83,7 @@ function IntegrationCreate() {
           fullWidth
         />
 
-        {integrationOptionArray.fields.map((f, i) => (
+        {integrationFormOptionsArray.fields.map((f, i) => (
           <React.Fragment key={JSON.stringify(f)}>
             <TextField
               {...integrationForm.register(`options.${i}.field`, {
@@ -106,26 +106,28 @@ function IntegrationCreate() {
             <Grid
               item
               xs={12}
-              md={integrationOptionArray.fields.length === 1 ? 8 : 4}
+              md={integrationFormOptionsArray.fields.length === 1 ? 8 : 4}
             >
               <Button
                 variant="outlined"
                 fullWidth
                 disabled={uploading}
-                onClick={() => integrationOptionArray.append({ field: '' })}
+                onClick={() =>
+                  integrationFormOptionsArray.append({ field: '' })
+                }
               >
                 Add Field
               </Button>
             </Grid>
 
-            {integrationOptionArray.fields.length > 1 && (
+            {integrationFormOptionsArray.fields.length > 1 && (
               <Grid item xs={12} md={4}>
                 <Button
                   variant="outlined"
                   color="error"
                   fullWidth
                   disabled={uploading}
-                  onClick={() => integrationOptionArray.remove(-1)}
+                  onClick={() => integrationFormOptionsArray.remove(-1)}
                 >
                   Remove Field
                 </Button>
@@ -157,7 +159,7 @@ function IntegrationCreate() {
               </IconButton>
             }
           >
-            <strong>{result?.message}</strong>
+            <strong id="integration-create-result">{result?.message}</strong>
           </Alert>
         </Collapse>
 

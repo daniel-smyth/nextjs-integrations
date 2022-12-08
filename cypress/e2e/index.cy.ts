@@ -77,25 +77,22 @@ describe('Integrations', () => {
     // Give integration a name
     cy.get(`[id="new-integration-name"]`).type(integrationName);
 
-    // Add field and give value
+    // Add fields to new integration
+    cy.get(`[id="integration-options-0"]`).type('random_field');
     cy.get(`button`).contains('Add Field').click();
-    cy.get(`[id="integration-options-0"]`).type('api_key');
+    cy.get(`[id="integration-options-1"]`).type('random_field');
 
     // Add mappings
     cy.get(`[id="new-integration-mappings"]`).click();
 
     // Create integration
     cy.get('button').contains(`Create Integration`).click();
+    cy.get('[id=integration-create-result]').contains(
+      `New integration created`
+    );
 
-    cy.request('/api/integrations').then((response) => {
-      const integrations = response.body;
+    cy.reload();
 
-      // Integration should be in database
-      expect(integrations.find((i) => i.name === integrationName));
-
-      // Page should contain new integration
-      cy.reload();
-      cy.contains(integrationName);
-    });
+    cy.contains(integrationName);
   });
 });
