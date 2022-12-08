@@ -18,7 +18,6 @@
     "airbnb/hooks",
     "airbnb-typescript",
     "prettier",
-    "plugin:cypress/recommended",
     "plugin:@next/next/recommended"
   ],
   "rules": {

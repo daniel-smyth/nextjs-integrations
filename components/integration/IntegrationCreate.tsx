@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useFieldArray, useForm } from 'react-hook-form';
 import Alert, { AlertColor } from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -17,7 +15,7 @@ import { Integration } from '../../models/Integration';
 
 type IntegrationCreateForm = {
   name: string;
-  options: { name: string }[];
+  options: { field: string }[];
   field_mappings: boolean;
 };
 
@@ -25,45 +23,29 @@ function IntegrationCreate() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<{ type: string; message: string }>();
 
-  const schema = z
-    .object({
-      name: z
-        .string()
-        .min(1)
-        .regex(/^(\d|\w)+$/u)
-    })
-    .passthrough();
-
   const integrationForm = useForm<IntegrationCreateForm>({
     defaultValues: {
       name: '',
-      options: [],
+      options: [{ field: '' }],
       field_mappings: false
-    },
-    resolver: zodResolver(schema)
+    }
   });
 
-  const optionsArray = useFieldArray({
-    control: integrationForm.control,
-    name: 'options'
+  const integrationOptionArray = useFieldArray({
+    name: 'options',
+    control: integrationForm.control
   });
 
   const addIntegration = async (form: IntegrationCreateForm) => {
     try {
+      setUploading(false);
+
       const body: Integration = {
         name: form.name,
-        options: {},
+        options: form.options.reduce((a, v) => ({ ...a, [v.field]: '' }), {}),
         connected: false
       };
 
-      // Form integration options are stored as array, convert to object
-      const options: any = {};
-      form.options.forEach((o) => {
-        options[o.name] = '';
-      });
-      body.options = options;
-
-      // Add empty field mappings if integrations should have field mappings
       if (form.field_mappings) {
         body.field_mappings = {};
       }
@@ -93,54 +75,63 @@ function IntegrationCreate() {
       <Stack spacing={4}>
         <TextField
           {...integrationForm.register('name', {
-            required: true
+            required: true,
+            minLength: 1
           })}
           label="Name"
           id="new-integration-name"
           fullWidth
         />
-        {integrationForm.formState.errors.name && (
-          <Alert severity="warning">
-            Name can only be characters and numbers
-          </Alert>
-        )}
-        {optionsArray.fields.map((f, i) => (
+
+        {integrationOptionArray.fields.map((f, i) => (
           <React.Fragment key={JSON.stringify(f)}>
             <TextField
-              {...integrationForm.register(`options.${i}.name`)}
+              {...integrationForm.register(`options.${i}.field`, {
+                required: true,
+                minLength: 1
+              })}
               label="Option"
               id={`integration-options-${i}`}
               fullWidth
             />
           </React.Fragment>
         ))}
+
         <Box>
           <Grid
             container
             rowSpacing={2}
             columnSpacing={{ xs: 1, sm: 2, md: 3 }}
           >
-            <Grid item xs={12} md={4}>
+            <Grid
+              item
+              xs={12}
+              md={integrationOptionArray.fields.length === 1 ? 8 : 4}
+            >
               <Button
                 variant="outlined"
                 fullWidth
                 disabled={uploading}
-                onClick={() => optionsArray.append({ name: '' })}
+                onClick={() => integrationOptionArray.append({ field: '' })}
               >
                 Add Field
               </Button>
             </Grid>
-            <Grid item xs={12} md={4}>
-              <Button
-                variant="outlined"
-                color="error"
-                fullWidth
-                disabled={uploading}
-                onClick={() => optionsArray.remove(-1)}
-              >
-                Remove Field
-              </Button>
-            </Grid>
+
+            {integrationOptionArray.fields.length > 1 && (
+              <Grid item xs={12} md={4}>
+                <Button
+                  variant="outlined"
+                  color="error"
+                  fullWidth
+                  disabled={uploading}
+                  onClick={() => integrationOptionArray.remove(-1)}
+                >
+                  Remove Field
+                </Button>
+              </Grid>
+            )}
+
             <Grid item textAlign="center" xs={12} md={4}>
               <FormControlLabel
                 control={
@@ -152,6 +143,7 @@ function IntegrationCreate() {
             </Grid>
           </Grid>
         </Box>
+
         <Collapse in={!!result}>
           <Alert
             severity={result?.type as AlertColor}
@@ -168,6 +160,11 @@ function IntegrationCreate() {
             <strong>{result?.message}</strong>
           </Alert>
         </Collapse>
+
+        {Object.keys(integrationForm.formState.errors).length !== 0 && (
+          <Alert severity="warning">Fields cannot be empty</Alert>
+        )}
+
         <Button type="submit" variant="contained" disabled={uploading}>
           {uploading ? 'Adding Integration...' : 'Create Integration'}
         </Button>

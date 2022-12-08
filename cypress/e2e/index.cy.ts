@@ -13,17 +13,19 @@ describe('Integrations', () => {
   it('displays all integrations and their options', () => {
     cy.visit('http://localhost:3000/');
 
-    // Integration option inputs
-    integrationOptions.forEach((o) => {
-      cy.get(`[id="${integration.name}-${o}"]`).should('have.value', '');
-    });
-
-    // Integration field mappings inputs
-    if (integration.field_mappings) {
-      integrationFieldMaps.forEach((map) => {
-        cy.get(`[id="${integration.name}-${map}"]`).should('have.value', '');
+    integrations.forEach((integration) => {
+      // Integration option inputs
+      Object.keys(integration.options).forEach((o) => {
+        cy.get(`[id="${integration.name}-${o}"]`).should('have.value', '');
       });
-    }
+
+      // Integration field mappings inputs
+      if (integration.field_mappings) {
+        Object.keys(integration.field_mappings).forEach((map) => {
+          cy.get(`[id="${integration.name}-${map}"]`).should('have.value', '');
+        });
+      }
+    });
   });
 
   it('connects an integration and disable inputs', () => {
@@ -33,12 +35,11 @@ describe('Integrations', () => {
     });
 
     // Populate integration field mappings
-    if (integration.field_mappings) {
-      integrationFieldMaps.forEach((map) => {
-        cy.get(`[id="${integration.name}-${map}"]`).type(`${map}-testinput`);
-      });
-    }
+    integrationFieldMaps.forEach((map) => {
+      cy.get(`[id="${integration.name}-${map}"]`).type(`${map}-testinput`);
+    });
 
+    // Connect integration
     cy.get('button').contains(`Connect ${integration.name}`).click();
 
     cy.reload();
@@ -52,55 +53,49 @@ describe('Integrations', () => {
     });
   });
 
-  it('disconnects an integration option and clears its inputs', () => {
+  it('disconnects an integration option', () => {
+    // Disconnect integration
     cy.get('button').contains(`Disconnect ${integration.name}`).click();
 
-    // Integration options should be empty after disconnect
-    integrationOptions.forEach((o) => {
-      cy.get(`[id="${integration.name}-${o}"]`).should('have.value', '');
-    });
-
-    // Field mappings should be empty after disconnect
-    if (integration.field_mappings) {
-      integrationFieldMaps.forEach((map) => {
-        cy.get(`[id="${integration.name}-${map}"]`).should('have.value', '');
-      });
-    }
-  });
-
-  it('tries connect an integration with duplicate mappings', () => {
-    // Populate integration options with duplicates
-    integrationOptions.forEach((o) => {
-      cy.get(`[id="${integration.name}-${o}"]`).type('testinput');
-    });
-
-    // Populate field mappings with duplicates
-    if (integration.field_mappings) {
-      integrationFieldMaps.forEach((map) => {
-        cy.get(`[id="${integration.name}-${map}"]`).type('samevalue');
-      });
-    }
-
-    cy.get('button').contains(`Connect ${integration.name}`).click();
-    // Should not connnect - button should not say "Disconnect Integration"
+    // Button now gives option to connect
     cy.get('button').contains(`Connect ${integration.name}`);
+
+    // Integration option inputs are enabled
+    integrationOptions.forEach((o) => {
+      cy.get(`[id="${integration.name}-${o}"]`).should('not.be.disabled');
+    });
+
+    // Integration field mappings inputs are enabled
+    integrationFieldMaps.forEach((map) => {
+      cy.get(`[id="${integration.name}-${map}"]`).should('not.be.disabled');
+    });
   });
 
   it('creates a new integration', () => {
-    const name = 'MyNewIntegration';
+    const integrationName = 'MyNewIntegration';
 
-    cy.get(`[id="new-integration-name"]`).type(name);
+    // Give integration a name
+    cy.get(`[id="new-integration-name"]`).type(integrationName);
 
+    // Add field and give value
     cy.get(`button`).contains('Add Field').click();
-
     cy.get(`[id="integration-options-0"]`).type('api_key');
 
+    // Add mappings
     cy.get(`[id="new-integration-mappings"]`).click();
 
+    // Create integration
     cy.get('button').contains(`Create Integration`).click();
 
-    cy.reload();
+    cy.request('/api/integrations').then((response) => {
+      const integrations = response.body;
 
-    cy.contains(name);
+      // Integration should be in database
+      expect(integrations.find((i) => i.name === integrationName));
+
+      // Page should contain new integration
+      cy.reload();
+      cy.contains(integrationName);
+    });
   });
 });
