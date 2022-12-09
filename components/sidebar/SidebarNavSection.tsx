@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from '@emotion/styled';
-
 import Typography from '@mui/material/Typography';
-
 import { SidebarItems } from '../../types/sidebar';
 import SidebarNavList from './SidebarNavList';
 

@@ -6,7 +6,6 @@ import MuiBox from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import ListItemButton from '@mui/material/ListItemButton';
 import Typography from '@mui/material/Typography';
-
 import { SidebarItems } from '../../types/sidebar';
 import Footer from './SidebarFooter';
 import SidebarNav from './SidebarNav';

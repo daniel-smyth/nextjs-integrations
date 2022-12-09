@@ -1,4 +1,3 @@
-import { Contact } from '../models/Contact';
 import { Integration } from '../models/Integration';
 import { User } from '../models/User';
 
