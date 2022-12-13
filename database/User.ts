@@ -32,6 +32,11 @@ export default class UserDatabase {
     return this.user;
   }
 
+  public static set(user: User): User {
+    this.user = user;
+    return user;
+  }
+
   public static getIntegration(id: string) {
     return this.user.integrations.find((i) => i.name === id);
   }
