@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Tag, User, Users } from 'react-feather';
 import styled from '@emotion/styled';
 import { spacing } from '@mui/system';
 import Breadcrumbs from '@mui/material/Breadcrumbs';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useUser } from '../context/UserContext';
 import DashboardLayout from '../layouts/Dashboard';
-import IntegrationConnect from '../components/integration/IntegrationConnect';
-import IntegrationCreate from '../components/integration/IntegrationCreate';
-import { Integration } from '../models/Integration';
+import IntegrationContainer from '../components/integration/IntegrationContainer';
+import ContactContainer from '../components/contacts/ContactContainer';
 
 const Spacer = styled.div(spacing);
 
@@ -50,7 +47,7 @@ function About() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            {user?.given_name} {user?.family_name}
+            {user.given_name} {user.family_name}
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" mb={2}>
@@ -74,64 +71,6 @@ function About() {
   );
 }
 
-function Integrations() {
-  const [integrations, setIntegrations] = useState<Integration[]>([]);
-
-  useEffect(() => {
-    const fetchIntegrations = async () => {
-      try {
-        let res: any = await fetch(`/api/integrations/`);
-
-        if (res.status === 200) {
-          const allIntegrations = await res.json();
-          setIntegrations(allIntegrations);
-        } else {
-          res = await res.json();
-          throw new Error(res.error);
-        }
-      } catch (err: any) {
-        console.log(err.message); // eslint-disable-line no-console
-      }
-    };
-
-    fetchIntegrations();
-
-    return () => {
-      setIntegrations([]);
-    };
-  }, []);
-
-  return (
-    <Stack spacing={6}>
-      <Card>
-        <CardHeader
-          title={<Typography variant="h2">Manage Integrations</Typography>}
-        />
-        <CardContent>
-          <Stack spacing={12}>
-            {integrations.map((integration) => (
-              <IntegrationConnect
-                defaultValues={integration}
-                key={integration.name}
-              />
-            ))}
-          </Stack>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader
-          title={<Typography variant="h2">Add integration</Typography>}
-        />
-        <CardContent>
-          <Stack spacing={5}>
-            <IntegrationCreate />
-          </Stack>
-        </CardContent>
-      </Card>
-    </Stack>
-  );
-}
-
 function Profile() {
   return (
     <DashboardLayout>
@@ -142,15 +81,17 @@ function Profile() {
         <Link href="/">Blinq</Link>
         <Typography>Profile</Typography>
       </Breadcrumbs>
-
       <Divider sx={{ my: 6 }} />
-
       <Grid container spacing={6}>
         <Grid item xs={12} lg={4} xl={3}>
           <About />
         </Grid>
         <Grid item xs={12} lg={8} xl={9}>
-          <Integrations />
+          <ContactContainer />
+        </Grid>
+        <Grid item xs={12} lg={8} xl={3} />
+        <Grid item xs={12} lg={8} xl={9}>
+          <IntegrationContainer />
         </Grid>
       </Grid>
     </DashboardLayout>

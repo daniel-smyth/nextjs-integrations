@@ -15,14 +15,6 @@ export default class UserDatabase {
         email: 'terry@waffles.co',
         met_at_location: 'Melbourne, Australia',
         notes: 'Terry has a beard.'
-      },
-      {
-        id: '1235',
-        given_name: 'Terry',
-        family_name: 'Walker',
-        email: 'terry@waffles.co',
-        met_at_location: 'Melbourne, Australia',
-        notes: 'Terry has a beard.'
       }
     ],
     integrations: []
@@ -30,6 +22,11 @@ export default class UserDatabase {
 
   public static get(): User {
     return this.user;
+  }
+
+  public static set(user: User): User {
+    this.user = user;
+    return user;
   }
 
   public static getIntegration(id: string) {

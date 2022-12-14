@@ -73,7 +73,7 @@ function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
 
   return (
     <form onSubmit={integrationForm.handleSubmit(submitIntegration)}>
-      <Typography variant="h3" gutterBottom sx={{ pb: 4 }}>
+      <Typography variant="h3" gutterBottom sx={{ pb: 2 }}>
         {integration.name}
       </Typography>
 
@@ -93,15 +93,17 @@ function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
           </React.Fragment>
         ))}
 
-        <Typography variant="h5">Field Mappings</Typography>
         {integration.field_mappings && (
           <Box>
+            <Typography variant="h5" gutterBottom sx={{ pb: 2 }}>
+              Field Mappings
+            </Typography>
             <Grid
               container
               rowSpacing={2}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              {Object.keys(user?.contacts[0]!).map((field) => (
+              {Object.keys(user?.contacts[0] || {}).map((field) => (
                 <React.Fragment key={field}>
                   <Grid item xs={6}>
                     <TextField value={field} fullWidth disabled />

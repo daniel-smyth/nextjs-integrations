@@ -10,6 +10,7 @@ import { User } from '../models/User';
 
 declare type UserContextType = {
   user: null | User;
+  updateUser: (newUser: User) => Promise<void>;
 };
 
 const UserContext = createContext<UserContextType | null>(null);
@@ -40,7 +41,27 @@ function UserProvider({ children }: { children: ReactNode }) {
     initialize();
   }, []);
 
-  const userMemo = useMemo(() => ({ user }), [user]);
+  const updateUser = async (newUser: User) => {
+    try {
+      let res: any = await fetch('/api/user', {
+        method: 'PUT',
+        body: JSON.stringify(newUser)
+      });
+
+      if (res.status === 200) {
+        const response = await res.json();
+        setUser(response);
+      } else {
+        res = await res.json();
+        throw new Error(res.error);
+      }
+    } catch (err) {
+      console.log(err); // eslint-disable-line no-console
+      setUser(null);
+    }
+  };
+
+  const userMemo = useMemo(() => ({ user, updateUser }), [user]);
 
   return (
     <UserContext.Provider value={userMemo}>{children}</UserContext.Provider>
