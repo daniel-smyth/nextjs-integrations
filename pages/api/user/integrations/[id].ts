@@ -10,27 +10,15 @@ export default nc<NextApiRequest, NextApiResponse>({
   onNoMatch: (req, res) => {
     res.status(404).end('Not found');
   }
-})
-  .get(getIntegration)
-  .delete(deleteIntegration);
+}).delete(deleteUserIntegration);
 
-async function getIntegration(req: NextApiRequest, res: NextApiResponse) {
+async function deleteUserIntegration(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   try {
-    const { id } = req.query;
-    const integration = UserDatabase.getIntegration(id as string);
+    console.log(UserDatabase);
 
-    if (!integration) {
-      return res.status(404).json({ error: responses.item_not_found });
-    }
-
-    return res.status(200).json(integration);
-  } catch (err: any) {
-    return res.status(500).json({ error: responses.internal_error });
-  }
-}
-
-async function deleteIntegration(req: NextApiRequest, res: NextApiResponse) {
-  try {
     const { id } = req.query;
     const result = UserDatabase.deleteIntegration(id as string);
 

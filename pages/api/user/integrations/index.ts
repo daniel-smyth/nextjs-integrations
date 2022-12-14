@@ -10,9 +10,9 @@ export default nc<NextApiRequest, NextApiResponse>({
   onNoMatch: (req, res) => {
     res.status(404).end('Not found');
   }
-}).post(postIntegration);
+}).post(postUserIntegration);
 
-async function postIntegration(req: NextApiRequest, res: NextApiResponse) {
+async function postUserIntegration(req: NextApiRequest, res: NextApiResponse) {
   try {
     const integration = UserDatabase.insertIntegration(JSON.parse(req.body));
 
@@ -20,6 +20,7 @@ async function postIntegration(req: NextApiRequest, res: NextApiResponse) {
       return res.status(409).json({ error: responses.item_exists });
     }
 
+    console.log(UserDatabase);
     return res.status(200).json(integration);
   } catch (err: any) {
     return res.status(500).json({ error: responses.internal_error });

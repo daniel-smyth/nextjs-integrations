@@ -1,4 +1,3 @@
-import { Contact } from '../models/Contact';
 import { Integration } from '../models/Integration';
 import { User } from '../models/User';
 
@@ -30,10 +29,6 @@ export default class UserDatabase {
     return user;
   }
 
-  public static getIntegration(id: string) {
-    return this.user.integrations.find((i) => i.name === id);
-  }
-
   public static insertIntegration(integration: Integration) {
     const exists = this.user.integrations.find(
       (i) => i.name === integration.name
@@ -61,51 +56,5 @@ export default class UserDatabase {
     this.user.integrations.splice(index, 1);
 
     return true;
-  }
-
-  public static getContact(id: string) {
-    return this.user.contacts.find((i) => i.email === id);
-  }
-
-  public static insertContact(contact: Contact) {
-    const exists = this.user.contacts.find((i) => i.email === contact.email);
-
-    if (exists) {
-      return undefined;
-    }
-
-    this.user.contacts.push(contact);
-
-    return contact;
-  }
-
-  public static editContact(id: string, contact: Contact) {
-    const exists = this.user.contacts.find((i) => i.email === id);
-
-    if (exists) {
-      return undefined;
-    }
-
-    const index = this.user.contacts.indexOf(contact);
-    this.user.contacts[index] = contact;
-
-    return contact;
-  }
-
-  public static deleteContact(id: string) {
-    const contact = this.user.contacts.find((i) => i.email === id);
-
-    if (!contact) {
-      return undefined;
-    }
-
-    const index = this.user.contacts.indexOf(contact);
-    this.user.contacts.splice(index, 1);
-
-    return true;
-  }
-
-  public static getAllContacts() {
-    return this.user.contacts;
   }
 }
