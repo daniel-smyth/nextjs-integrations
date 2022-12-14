@@ -1,4 +1,3 @@
-import { Contact } from '../models/Contact';
 import { Integration } from '../models/Integration';
 import { User } from '../models/User';
 
@@ -30,10 +29,6 @@ export default class UserDatabase {
     return user;
   }
 
-  public static getIntegration(id: string) {
-    return this.user.integrations.find((i) => i.name === id);
-  }
-
   public static insertIntegration(integration: Integration) {
     const exists = this.user.integrations.find(
       (i) => i.name === integration.name
@@ -61,17 +56,5 @@ export default class UserDatabase {
     this.user.integrations.splice(index, 1);
 
     return true;
-  }
-
-  public static insertContact(contact: Contact) {
-    const exists = this.user.contacts.find((i) => i.email === contact.email);
-
-    if (exists) {
-      return undefined;
-    }
-
-    this.user.contacts.push(contact);
-
-    return contact;
   }
 }

@@ -10,11 +10,11 @@ import Typography from '@mui/material/Typography';
 import { useUser } from '../../context/UserContext';
 import { Integration } from '../../models/Integration';
 
-interface IntegrationConnectProps {
+interface IntegrationManageProps {
   defaultValues: Integration;
 }
 
-function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
+function IntegrationManage({ defaultValues }: IntegrationManageProps) {
   const { user } = useUser();
   const initialValue = user?.integrations.find(
     (integration) => integration.name === defaultValues.name
@@ -27,7 +27,7 @@ function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
   });
 
   const connectIntegration = async (newIntegration: Integration) => {
-    let res: any = await fetch(`/api/integrations/${integration.name}`, {
+    let res: any = await fetch(`/api/user/integrations`, {
       method: 'POST',
       body: JSON.stringify(newIntegration)
     });
@@ -42,7 +42,7 @@ function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
   };
 
   const disconnectIntegration = async () => {
-    let res: any = await fetch(`/api/integrations/${integration.name}`, {
+    let res: any = await fetch(`/api/user/integrations/${integration.name}`, {
       method: 'DELETE'
     });
 
@@ -144,4 +144,4 @@ function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
   );
 }
 
-export default IntegrationConnect;
+export default IntegrationManage;
