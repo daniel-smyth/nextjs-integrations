@@ -10,7 +10,18 @@ export default nc<NextApiRequest, NextApiResponse>({
   onNoMatch: (req, res) => {
     res.status(404).end('Not found');
   }
-}).post(postContact);
+})
+  .get(getContacts)
+  .post(postContact);
+
+function getContacts(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const contacts = UserDatabase.getAllContacts();
+    return res.status(200).json(contacts);
+  } catch (err: any) {
+    return res.status(500).json({ error: responses.internal_error });
+  }
+}
 
 function postContact(req: NextApiRequest, res: NextApiResponse) {
   try {

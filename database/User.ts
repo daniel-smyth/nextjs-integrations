@@ -63,6 +63,10 @@ export default class UserDatabase {
     return true;
   }
 
+  public static getContact(id: string) {
+    return this.user.contacts.find((i) => i.email === id);
+  }
+
   public static insertContact(contact: Contact) {
     const exists = this.user.contacts.find((i) => i.email === contact.email);
 
@@ -73,5 +77,35 @@ export default class UserDatabase {
     this.user.contacts.push(contact);
 
     return contact;
+  }
+
+  public static editContact(id: string, contact: Contact) {
+    const exists = this.user.contacts.find((i) => i.email === id);
+
+    if (exists) {
+      return undefined;
+    }
+
+    const index = this.user.contacts.indexOf(contact);
+    this.user.contacts[index] = contact;
+
+    return contact;
+  }
+
+  public static deleteContact(id: string) {
+    const contact = this.user.contacts.find((i) => i.email === id);
+
+    if (!contact) {
+      return undefined;
+    }
+
+    const index = this.user.contacts.indexOf(contact);
+    this.user.contacts.splice(index, 1);
+
+    return true;
+  }
+
+  public static getAllContacts() {
+    return this.user.contacts;
   }
 }
