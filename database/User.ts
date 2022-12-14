@@ -15,14 +15,6 @@ export default class UserDatabase {
         email: 'terry@waffles.co',
         met_at_location: 'Melbourne, Australia',
         notes: 'Terry has a beard.'
-      },
-      {
-        id: '1235',
-        given_name: 'Terry',
-        family_name: 'Walker',
-        email: 'terry@waffles.co',
-        met_at_location: 'Melbourne, Australia',
-        notes: 'Terry has a beard.'
       }
     ],
     integrations: []

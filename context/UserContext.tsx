@@ -44,7 +44,8 @@ function UserProvider({ children }: { children: ReactNode }) {
   const updateUser = async (newUser: User) => {
     try {
       let res: any = await fetch('/api/user', {
-        method: 'PUT'
+        method: 'PUT',
+        body: JSON.stringify(newUser)
       });
 
       if (res.status === 200) {
