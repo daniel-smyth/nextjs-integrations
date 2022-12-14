@@ -6,7 +6,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import useAppSelector from '../../hooks/useAppSelector';
 import { Contact } from '../../models/Contact';
 import { useGetUserQuery } from '../../redux/slices/api';
 
