@@ -101,7 +101,7 @@ function IntegrationConnect({ defaultValues }: IntegrationConnectProps) {
               rowSpacing={2}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              {Object.keys(user?.contacts[0]!).map((field) => (
+              {Object.keys(user?.contacts[0] || {}).map((field) => (
                 <React.Fragment key={field}>
                   <Grid item xs={6}>
                     <TextField value={field} fullWidth disabled />
