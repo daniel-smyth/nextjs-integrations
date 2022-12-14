@@ -47,7 +47,7 @@ function About() {
             </AboutIcon>
           </Grid>
           <Grid item>
-            {user?.given_name} {user?.family_name}
+            {user.given_name} {user.family_name}
           </Grid>
         </Grid>
         <Grid container direction="row" alignItems="center" mb={2}>
