@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { useUser } from '../context/UserContext';
 import DashboardLayout from '../layouts/Dashboard';
 import IntegrationContainer from '../components/integration/IntegrationContainer';
-import ContactContainer from '../components/contact/ContactContainer';
+import ContactContainer from '../components/contacts/ContactContainer';
 
 const Spacer = styled.div(spacing);
 
