@@ -6,8 +6,8 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import useAppSelector from '../../hooks/useAppSelector';
 import { Contact } from '../../models/Contact';
+import { useGetUserQuery } from '../../redux/slices/api';
 
 interface ContactListItemProps {
   contact: Contact;
@@ -28,9 +28,9 @@ function ContactListItem({ contact }: ContactListItemProps) {
 }
 
 function ContactList() {
-  const { user } = useAppSelector((state) => state);
+  const { data: user, isFetching } = useGetUserQuery();
 
-  if (user.status === 'loading') {
+  if (isFetching || !user) {
     return null;
   }
 

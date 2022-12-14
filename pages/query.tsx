@@ -9,9 +9,9 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import useAppSelector from '../hooks/useAppSelector';
+import { useGetUserQuery } from '../redux/slices/api';
 import DashboardLayout from '../layouts/Dashboard';
-import ContactContainer from '../components/contacts/ContactContainer';
+import ContactContainer from '../components/contacts-query/ContactContainer';
 import IntegrationContainer from '../components/integrations/IntegrationContainer';
 
 const Spacer = styled.div(spacing);
@@ -27,48 +27,47 @@ const AboutIcon = styled.span`
 `;
 
 function About() {
-  const { user } = useAppSelector((state) => state);
+  const { data: user, isSuccess } = useGetUserQuery();
 
-  if (user.status === 'idle') {
-    return null;
+  if (isSuccess) {
+    return (
+      <Card>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            About
+          </Typography>
+          <Spacer mb={4} />
+          <Grid container direction="row" alignItems="center" mb={2}>
+            <Grid item>
+              <AboutIcon>
+                <User />
+              </AboutIcon>
+            </Grid>
+            <Grid item>
+              {user.given_name} {user.family_name}
+            </Grid>
+          </Grid>
+          <Grid container direction="row" alignItems="center" mb={2}>
+            <Grid item>
+              <AboutIcon>
+                <Tag />
+              </AboutIcon>
+            </Grid>
+            <Grid item>{user.email}</Grid>
+          </Grid>
+          <Grid container direction="row" alignItems="center">
+            <Grid item>
+              <AboutIcon>
+                <Users />
+              </AboutIcon>
+            </Grid>
+            <Grid item>{user.contacts.length} Contacts</Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+    );
   }
-
-  return (
-    <Card>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          About
-        </Typography>
-        <Spacer mb={4} />
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <User />
-            </AboutIcon>
-          </Grid>
-          <Grid item>
-            {user.given_name} {user.family_name}
-          </Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center" mb={2}>
-          <Grid item>
-            <AboutIcon>
-              <Tag />
-            </AboutIcon>
-          </Grid>
-          <Grid item>{user.email}</Grid>
-        </Grid>
-        <Grid container direction="row" alignItems="center">
-          <Grid item>
-            <AboutIcon>
-              <Users />
-            </AboutIcon>
-          </Grid>
-          <Grid item>{user.contacts.length} Contacts</Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-  );
+  return null;
 }
 
 function Profile() {

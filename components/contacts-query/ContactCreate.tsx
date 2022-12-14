@@ -9,15 +9,13 @@ import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { addNewContact } from '../../redux/slices/userSlice';
-import useAppSelector from '../../hooks/useAppSelector';
-import useAppDispatch from '../../hooks/useAppDispatch';
+import { useAddContactMutation, useGetUserQuery } from '../../redux/slices/api';
 import { Contact } from '../../models/Contact';
 
 export default function ContactCreate() {
   const [result, setResult] = useState<{ type: string; message: string }>();
-  const { user } = useAppSelector((state) => state);
-  const dispatch = useAppDispatch();
+  const [addNewContact, { isLoading }] = useAddContactMutation();
+  const { data: user } = useGetUserQuery();
 
   const getSchema = () =>
     Yup.lazy((obj) => {
@@ -38,11 +36,11 @@ export default function ContactCreate() {
 
   const addContact = async (newContact: Contact) => {
     try {
-      await dispatch(addNewContact(newContact)).unwrap();
+      await addNewContact(newContact).unwrap();
       setResult({ type: 'success', message: 'New contact created' });
     } catch (err: any) {
-      console.log(err.message); // eslint-disable-line no-console
-      setResult({ type: 'error', message: err.message });
+      console.log(err.data.error); // eslint-disable-line no-console
+      setResult({ type: 'error', message: err.data.error });
     }
   };
 
@@ -83,12 +81,8 @@ export default function ContactCreate() {
             <strong id="integration-create-result">{result?.message}</strong>
           </Alert>
         </Collapse>
-        <Button
-          type="submit"
-          variant="contained"
-          disabled={user.status === 'loading'}
-        >
-          {user.status === 'loading' ? 'Adding Contact...' : 'Create Contact'}
+        <Button type="submit" variant="contained" disabled={isLoading}>
+          {isLoading ? 'Adding Contact...' : 'Create Contact'}
         </Button>
       </Stack>
     </form>
