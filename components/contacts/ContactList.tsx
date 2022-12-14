@@ -6,7 +6,7 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import { useUser } from '../../context/UserContext';
+import useAppSelector from '../../hooks/useAppSelector';
 import { Contact } from '../../models/Contact';
 
 interface ContactListItemProps {
@@ -28,9 +28,9 @@ function ContactListItem({ contact }: ContactListItemProps) {
 }
 
 function ContactList() {
-  const { user } = useUser();
+  const { user } = useAppSelector((state) => state);
 
-  if (!user) {
+  if (user.status === 'loading') {
     return null;
   }
 

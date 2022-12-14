@@ -9,10 +9,10 @@ import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { useUser } from '../context/UserContext';
+import useAppSelector from '../hooks/useAppSelector';
 import DashboardLayout from '../layouts/Dashboard';
-import IntegrationContainer from '../components/integrations/IntegrationContainer';
 import ContactContainer from '../components/contacts/ContactContainer';
+import IntegrationContainer from '../components/integrations/IntegrationContainer';
 
 const Spacer = styled.div(spacing);
 
@@ -27,9 +27,9 @@ const AboutIcon = styled.span`
 `;
 
 function About() {
-  const { user } = useUser();
+  const { user } = useAppSelector((state) => state);
 
-  if (!user) {
+  if (user.status === 'idle') {
     return null;
   }
 
@@ -89,7 +89,7 @@ function Profile() {
         <Grid item xs={12} lg={8} xl={9}>
           <ContactContainer />
         </Grid>
-        <Grid item xs={12} lg={8} xl={3} />
+        <Grid item xs={12} lg={4} xl={3} />
         <Grid item xs={12} lg={8} xl={9}>
           <IntegrationContainer />
         </Grid>

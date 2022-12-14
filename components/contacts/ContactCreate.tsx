@@ -2,16 +2,22 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import Alert from '@mui/material/Alert';
+import CloseIcon from '@mui/icons-material/Close';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import Button from '@mui/material/Button';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { useUser } from '../../context/UserContext';
+import { addNewContact } from '../../redux/slices/userSlice';
+import useAppSelector from '../../hooks/useAppSelector';
+import useAppDispatch from '../../hooks/useAppDispatch';
 import { Contact } from '../../models/Contact';
 
 export default function ContactCreate() {
-  const { user, updateUser } = useUser();
-  const [uploading, setUploading] = useState(false);
+  const [result, setResult] = useState<{ type: string; message: string }>();
+  const { user } = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
 
   const getSchema = () =>
     Yup.lazy((obj) => {
@@ -32,28 +38,19 @@ export default function ContactCreate() {
 
   const addContact = async (newContact: Contact) => {
     try {
-      setUploading(true);
-
-      if (user) {
-        user.contacts.push(newContact);
-        await updateUser(user);
-      }
+      await dispatch(addNewContact(newContact)).unwrap();
+      setResult({ type: 'success', message: 'New contact created' });
     } catch (err: any) {
       console.log(err.message); // eslint-disable-line no-console
-    } finally {
-      setUploading(false);
+      setResult({ type: 'error', message: err.message });
     }
   };
-
-  if (!user) {
-    return null;
-  }
 
   return (
     <form onSubmit={contactForm.handleSubmit(addContact)}>
       <Stack spacing={4}>
         {Object.keys(user?.contacts[0] || {}).map((field) => (
-          <>
+          <React.Fragment key={field}>
             <TextField
               {...contactForm.register(field as keyof Contact, {
                 required: true,
@@ -62,17 +59,36 @@ export default function ContactCreate() {
               label={field}
               fullWidth
               id={`new-contact-${field}`}
-              key={field}
             />
             {contactForm.formState.errors[field as keyof Contact] && (
               <Alert severity="warning">
                 {contactForm.formState.errors[field as keyof Contact]!.message}
               </Alert>
             )}
-          </>
+          </React.Fragment>
         ))}
-        <Button type="submit" variant="contained" disabled={uploading}>
-          {uploading ? 'Adding Contact...' : 'Create Contact'}
+        <Collapse in={!!result}>
+          <Alert
+            severity={result?.type as AlertColor}
+            action={
+              <IconButton
+                color="inherit"
+                size="small"
+                onClick={() => setResult(undefined)}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            <strong id="integration-create-result">{result?.message}</strong>
+          </Alert>
+        </Collapse>
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={user.status === 'loading'}
+        >
+          {user.status === 'loading' ? 'Adding Contact...' : 'Create Contact'}
         </Button>
       </Stack>
     </form>

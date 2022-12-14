@@ -82,7 +82,6 @@ function IntegrationCreate() {
           id="new-integration-name"
           fullWidth
         />
-
         {integrationFormOptionsArray.fields.map((f, i) => (
           <React.Fragment key={JSON.stringify(f)}>
             <TextField
@@ -96,7 +95,6 @@ function IntegrationCreate() {
             />
           </React.Fragment>
         ))}
-
         <Box>
           <Grid
             container
@@ -119,7 +117,6 @@ function IntegrationCreate() {
                 Add Field
               </Button>
             </Grid>
-
             {integrationFormOptionsArray.fields.length > 1 && (
               <Grid item xs={12} md={4}>
                 <Button
@@ -133,7 +130,6 @@ function IntegrationCreate() {
                 </Button>
               </Grid>
             )}
-
             <Grid item textAlign="center" xs={12} md={4}>
               <FormControlLabel
                 control={
@@ -145,7 +141,6 @@ function IntegrationCreate() {
             </Grid>
           </Grid>
         </Box>
-
         <Collapse in={!!result}>
           <Alert
             severity={result?.type as AlertColor}
@@ -162,11 +157,9 @@ function IntegrationCreate() {
             <strong id="integration-create-result">{result?.message}</strong>
           </Alert>
         </Collapse>
-
         {Object.keys(integrationForm.formState.errors).length !== 0 && (
           <Alert severity="warning">Fields cannot be empty</Alert>
         )}
-
         <Button type="submit" variant="contained" disabled={uploading}>
           {uploading ? 'Adding Integration...' : 'Create Integration'}
         </Button>
