@@ -57,9 +57,7 @@ function IntegrationContainer() {
           title={<Typography variant="h2">Add integration</Typography>}
         />
         <CardContent>
-          <Stack spacing={5}>
-            <IntegrationCreate />
-          </Stack>
+          <IntegrationCreate />
         </CardContent>
       </Card>
     </Stack>
