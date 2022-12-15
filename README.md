@@ -7,7 +7,7 @@
 
 ## Description
 
-My sample Next.js app and API with Redux RTK query. Styling with MUI. For desktop and mobile.
+My sample Next.js app using Redux RTK query for data fetching and APIs. Styling with MUI. For desktop and mobile.
 
 **URL:** https://nextjs-rtkquery.vercel.app/
 
