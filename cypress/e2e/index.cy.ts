@@ -71,28 +71,28 @@ describe('Integrations', () => {
     });
   });
 
-  it('creates a new integration', () => {
-    const integrationName = 'MyNewIntegration';
+  // it('creates a new integration', () => {
+  //   const integrationName = 'MyNewIntegration';
 
-    // Give integration a name
-    cy.get(`[id="new-integration-name"]`).type(integrationName);
+  //   // Give integration a name
+  //   cy.get(`[id="new-integration-name"]`).type(integrationName);
 
-    // Add fields to new integration
-    cy.get(`[id="integration-options-0"]`).type('random_field');
-    cy.get(`button`).contains('Add Field').click();
-    cy.get(`[id="integration-options-1"]`).type('random_field');
+  //   // Add fields to new integration
+  //   cy.get(`[id="integration-options-0"]`).type('random_field');
+  //   cy.get(`button`).contains('Add Field').click();
+  //   cy.get(`[id="integration-options-1"]`).type('random_field');
 
-    // Add mappings
-    cy.get(`[id="new-integration-mappings"]`).click();
+  //   // Add mappings
+  //   cy.get(`[id="new-integration-mappings"]`).click();
 
-    // Create integration
-    cy.get('button').contains(`Create Integration`).click();
-    cy.get('[id=integration-create-result]').contains(
-      `New integration created`
-    );
+  //   // Create integration
+  //   cy.get('button').contains(`Create Integration`).click();
+  //   cy.get('[id=integration-create-result]').contains(
+  //     `New integration created`
+  //   );
 
-    cy.reload();
+  //   cy.reload();
 
-    cy.contains(integrationName);
-  });
+  //   cy.contains(integrationName);
+  // });
 });

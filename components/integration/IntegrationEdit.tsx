@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import Alert from '@mui/material/Alert';
+import Alert, { AlertColor } from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import CloseIcon from '@mui/icons-material/Close';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 import { useUser } from '../../context/UserContext';
 import { Integration } from '../../models/Integration';
 
@@ -20,6 +23,7 @@ function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
     (integration) => integration.name === defaultValues.name
   );
   const [integration, setIntegration] = useState(initialValue || defaultValues);
+  const [result, setResult] = useState<{ type: string; message: string }>();
   const [uploading, setUploading] = useState(false);
 
   const integrationForm = useForm({
@@ -66,8 +70,10 @@ function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
       }
     } catch (err: any) {
       console.log(err.message); // eslint-disable-line no-console
+      setResult({ type: 'error', message: err.message });
     } finally {
       setUploading(false);
+      setResult({ type: 'success', message: 'Integration connected' });
     }
   };
 
@@ -81,15 +87,33 @@ function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
         {Object.keys(integration.options).map((option) => (
           <React.Fragment key={option}>
             <TextField
-              {...integrationForm.register(`options.${option}`, {
+              {...integrationForm.register(`options.${option}.value`, {
                 required: true,
-                minLength: 1
+                minLength: 1,
+                validate: (value) => {
+                  // eslint-disable-next-line no-restricted-syntax
+                  for (const validator of integration.options[option]
+                    .validators) {
+                    if (new RegExp(validator).test(value) === false) {
+                      return 'You failed';
+                    }
+                  }
+                  return true;
+                }
               })}
               label={option}
               id={`${integration.name}-${option}`}
               disabled={integration.connected === true}
               fullWidth
             />
+            {integrationForm.formState.errors.options?.[option] && (
+              <Alert severity="warning">
+                {
+                  integrationForm.formState.errors.options?.[option]?.value
+                    .message
+                }
+              </Alert>
+            )}
           </React.Fragment>
         ))}
 
@@ -122,9 +146,22 @@ function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
             </Grid>
           </Box>
         )}
-        {Object.keys(integrationForm.formState.errors).length !== 0 && (
-          <Alert severity="warning">Field&apos;s cannot be empty</Alert>
-        )}
+        <Collapse in={!!result}>
+          <Alert
+            severity={result?.type as AlertColor}
+            action={
+              <IconButton
+                color="inherit"
+                size="small"
+                onClick={() => setResult(undefined)}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            <strong>{result?.message}</strong>
+          </Alert>
+        </Collapse>
         <Button
           type="submit"
           variant="contained"
