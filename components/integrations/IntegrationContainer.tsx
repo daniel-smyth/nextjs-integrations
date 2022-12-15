@@ -1,39 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import IntegrationCreate from './IntegrationCreate';
 import IntegrationEdit from './IntegrationEdit';
-import { Integration } from '../../models/Integration';
+import IntegrationCreate from './IntegrationCreate';
+import { useGetIntegrationsQuery } from '../../redux/slices/api';
 
 function IntegrationContainer() {
-  const [integrations, setIntegrations] = useState<Integration[]>([]);
+  const { data: integrations } = useGetIntegrationsQuery();
 
-  useEffect(() => {
-    const fetchIntegrations = async () => {
-      try {
-        let res: any = await fetch(`/api/integrations/`);
-
-        if (res.status === 200) {
-          const allIntegrations = await res.json();
-          setIntegrations(allIntegrations);
-        } else {
-          res = await res.json();
-          throw new Error(res.error);
-        }
-      } catch (err: any) {
-        console.log(err.message); // eslint-disable-line no-console
-      }
-    };
-
-    fetchIntegrations();
-
-    return () => {
-      setIntegrations([]);
-    };
-  }, []);
+  if (!integrations) {
+    return null;
+  }
 
   return (
     <Stack spacing={6}>

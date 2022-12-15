@@ -20,6 +20,7 @@
     "@mui/lab": "^5.0.0-alpha.110",
     "@mui/material": "^5.10.16",
     "@mui/system": "^5.10.16",
+    "@reduxjs/toolkit": "^1.9.1",
     "deepmerge": "^4.2.2",
     "next": "13.0.6",
     "next-connect": "^0.13.0",
@@ -28,8 +29,8 @@
     "react-dom": "18.2.0",
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.40.0",
-    "yup": "^0.32.11",
-    "zod": "^3.19.1"
+    "react-redux": "^8.0.5",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^13.0.6",

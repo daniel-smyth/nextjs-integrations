@@ -5,42 +5,24 @@ export default class IntegrationDatabase {
     {
       name: 'Salesforce',
       options: {
-        client_id: {
-          value: '',
-          validators: ['[\\w\\d]+']
-        },
-        client_secret: {
-          value: '',
-          validators: ['']
-        }
+        client_id: '',
+        client_secret: ''
       },
       connected: false
     },
     {
       name: 'Zapier',
       options: {
-        api_key: {
-          value: '',
-          validators: ['']
-        }
+        api_key: ''
       },
       connected: false
     },
     {
       name: 'HubSpot',
       options: {
-        tenant_domain: {
-          value: '',
-          validators: ['']
-        },
-        client_id: {
-          value: '',
-          validators: ['']
-        },
-        client_secret: {
-          value: '',
-          validators: ['']
-        }
+        tenant_domain: '',
+        client_id: '',
+        client_secret: ''
       },
       field_mappings: {},
       connected: false

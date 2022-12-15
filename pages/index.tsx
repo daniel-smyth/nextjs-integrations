@@ -11,7 +11,8 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useUser } from '../context/UserContext';
 import DashboardLayout from '../layouts/Dashboard';
-import IntegrationContainer from '../components/integration/IntegrationContainer';
+import ContactContainer from '../components/contacts/ContactContainer';
+import IntegrationContainer from '../components/integrations/IntegrationContainer';
 
 const Spacer = styled.div(spacing);
 
@@ -85,6 +86,10 @@ function Profile() {
         <Grid item xs={12} lg={4} xl={3}>
           <About />
         </Grid>
+        <Grid item xs={12} lg={8} xl={9}>
+          <ContactContainer />
+        </Grid>
+        <Grid item xs={12} lg={4} xl={3} />
         <Grid item xs={12} lg={8} xl={9}>
           <IntegrationContainer />
         </Grid>
