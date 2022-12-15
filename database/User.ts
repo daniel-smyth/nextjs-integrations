@@ -7,7 +7,7 @@ export default class UserDatabase {
     id: '12345',
     given_name: 'Jane',
     family_name: 'Doe',
-    email: 'jane@blinq.me',
+    email: 'jane@cakes.me',
     contacts: [
       {
         id: '1234',
