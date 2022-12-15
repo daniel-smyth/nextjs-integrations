@@ -1,12 +1,75 @@
-# Blinq Fullstack Coding Challenge
+# Next.js and RTK Query
+
+| Library   | Website                                         |
+| --------- | ----------------------------------------------- |
+| Next.js   | https://nextjs.org/docs/                        |
+| RTK Query | https://redux-toolkit.js.org/rtk-query/overview |
 
 ## Description
 
-For desktop and mobile.
+My sample Next.js app and API with Redux RTK query. Styling with MUI. For desktop and mobile.
 
-Extensible so more integration partners can be added. See **Add integration** at bottom of the page and:
+**URL:** https://nextjs-rtkquery.vercel.app/
 
-**./components/integration/IntegrationCreate.tsx**
+## RTK Query
+
+RTK Query is a powerful data fetching and caching tool. It is designed to simplify common cases for loading data in a web application, eliminating the need to hand-write data fetching & caching logic yourself.
+
+Configuring the hook in `redux/slicesredux/slices/api.ts`
+
+```typescript
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+...
+
+export const apiSlice = createApi({
+  reducerPath: 'api',
+  baseQuery: fetchBaseQuery({ baseUrl: '/' }),
+  tagTypes: ['Contact', 'Integration', 'UserIntegration'],
+  endpoints: (builder) => ({
+    ...
+    addContact: builder.mutation({
+      query: (contact) => ({
+        url: '/api/user/contacts',
+        method: 'POST',
+        body: JSON.stringify(contact)
+      }),
+      invalidatesTags: ['Contact']
+    }),
+    ...
+  })
+});
+```
+
+Using a mutation hook in `components/contacts/ContactCreate.tsx`
+
+```typescript
+...
+
+import { useAddContactMutation } from '../../redux/slices/api';
+...
+
+export default function ContactCreate() {
+const [addNewContact, { isLoading }] = useAddContactMutation();
+
+...
+
+const addContact = async (newContact: Contact) => {
+  try {
+    // Call RTK mutation
+    await addNewContact(newContact).unwrap();
+
+    setResult({ type: 'success', message: 'New contact created' });
+  } catch (err: any) {
+    console.log(err.data.error); // eslint-disable-line no-console
+    setResult({ type: 'error', message: err.data.error });
+  }
+};
+```
+
+## Getting Started
+
+Setup by running `yarn` && `yarn dev`
 
 ## E2E Testing
 
@@ -23,7 +86,3 @@ Run `npm run cypress`
 For headless testing.
 
 Run `npm run cypress:headless`
-
-## Getting Started
-
-Setup by running `yarn` && `yarn dev`
