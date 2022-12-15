@@ -1,8 +1,8 @@
 import React from 'react';
 import { NextPage } from 'next';
 import type { AppProps } from 'next/app';
-import { CacheProvider, EmotionCache } from '@emotion/react';
 import createCache from '@emotion/cache';
+import { CacheProvider, EmotionCache } from '@emotion/react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { UserProvider } from '../context/UserContext';

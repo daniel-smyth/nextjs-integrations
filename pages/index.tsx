@@ -11,7 +11,7 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import { useUser } from '../context/UserContext';
 import DashboardLayout from '../layouts/Dashboard';
-import IntegrationContainer from '../components/integrations/IntegrationContainer';
+import IntegrationContainer from '../components/integration/IntegrationContainer';
 
 const Spacer = styled.div(spacing);
 

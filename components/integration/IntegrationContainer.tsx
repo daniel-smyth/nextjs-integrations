@@ -5,7 +5,7 @@ import CardHeader from '@mui/material/CardHeader';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import IntegrationCreate from './IntegrationCreate';
-import IntegrationManage from './IntegrationManage';
+import IntegrationEdit from './IntegrationEdit';
 import { Integration } from '../../models/Integration';
 
 function IntegrationContainer() {
@@ -14,7 +14,7 @@ function IntegrationContainer() {
   useEffect(() => {
     const fetchIntegrations = async () => {
       try {
-        let res: any = await fetch(`/api/integrations`);
+        let res: any = await fetch(`/api/integrations/`);
 
         if (res.status === 200) {
           const allIntegrations = await res.json();
@@ -44,7 +44,7 @@ function IntegrationContainer() {
         <CardContent>
           <Stack spacing={12}>
             {integrations.map((integration) => (
-              <IntegrationManage
+              <IntegrationEdit
                 defaultValues={integration}
                 key={integration.name}
               />

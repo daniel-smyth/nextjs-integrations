@@ -10,11 +10,11 @@ import Typography from '@mui/material/Typography';
 import { useUser } from '../../context/UserContext';
 import { Integration } from '../../models/Integration';
 
-interface IntegrationManageProps {
+interface IntegrationEditProps {
   defaultValues: Integration;
 }
 
-function IntegrationManage({ defaultValues }: IntegrationManageProps) {
+function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
   const { user } = useUser();
   const initialValue = user?.integrations.find(
     (integration) => integration.name === defaultValues.name
@@ -27,7 +27,7 @@ function IntegrationManage({ defaultValues }: IntegrationManageProps) {
   });
 
   const connectIntegration = async (newIntegration: Integration) => {
-    let res: any = await fetch(`/api/user/integrations`, {
+    let res: any = await fetch(`/api/integrations/${integration.name}`, {
       method: 'POST',
       body: JSON.stringify(newIntegration)
     });
@@ -42,7 +42,7 @@ function IntegrationManage({ defaultValues }: IntegrationManageProps) {
   };
 
   const disconnectIntegration = async () => {
-    let res: any = await fetch(`/api/user/integrations/${integration.name}`, {
+    let res: any = await fetch(`/api/integrations/${integration.name}`, {
       method: 'DELETE'
     });
 
@@ -73,7 +73,7 @@ function IntegrationManage({ defaultValues }: IntegrationManageProps) {
 
   return (
     <form onSubmit={integrationForm.handleSubmit(submitIntegration)}>
-      <Typography variant="h3" gutterBottom sx={{ pb: 2 }}>
+      <Typography variant="h3" gutterBottom sx={{ pb: 4 }}>
         {integration.name}
       </Typography>
 
@@ -93,17 +93,15 @@ function IntegrationManage({ defaultValues }: IntegrationManageProps) {
           </React.Fragment>
         ))}
 
+        <Typography variant="h5">Field Mappings</Typography>
         {integration.field_mappings && (
           <Box>
-            <Typography variant="h5" gutterBottom sx={{ pb: 2 }}>
-              Field Mappings
-            </Typography>
             <Grid
               container
               rowSpacing={2}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              {Object.keys(user?.contacts[0] || {}).map((field) => (
+              {Object.keys(user?.contacts[0]!).map((field) => (
                 <React.Fragment key={field}>
                   <Grid item xs={6}>
                     <TextField value={field} fullWidth disabled />
@@ -144,4 +142,4 @@ function IntegrationManage({ defaultValues }: IntegrationManageProps) {
   );
 }
 
-export default IntegrationManage;
+export default IntegrationEdit;

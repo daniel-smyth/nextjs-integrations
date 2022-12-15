@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // reactStrictMode: true,
+  reactStrictMode: true,
   swcMinify: true,
 
   // Use modularized imports for MUI when "npm run dev"
