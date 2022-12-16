@@ -16,7 +16,7 @@ import DashboardLayout from '../layouts/Dashboard';
 import ContactCreate from '../components/contacts/ContactCreate';
 import ContactList from '../components/contacts/ContactList';
 import IntegrationCreate from '../components/integrations/IntegrationCreate';
-import IntegrationsManage from '../components/integrations/IntegrationManage';
+import IntegrationsList from '../components/integrations/IntegrationList';
 import LoadingProgress from '../components/LoadingProgress';
 
 const Spacer = styled.div(spacing);
@@ -123,7 +123,7 @@ function Profile() {
                 }
               />
               <CardContent>
-                <IntegrationsManage />
+                <IntegrationsList />
               </CardContent>
             </Card>
             <Card>

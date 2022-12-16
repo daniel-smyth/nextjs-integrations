@@ -123,7 +123,7 @@ function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
   );
 }
 
-function IntegrationsManage() {
+function IntegrationsList() {
   const {
     data: integrations,
     isLoading,
@@ -148,4 +148,4 @@ function IntegrationsManage() {
   );
 }
 
-export default IntegrationsManage;
+export default IntegrationsList;
