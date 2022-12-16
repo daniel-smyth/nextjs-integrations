@@ -13,7 +13,7 @@ My sample Next.js app using Redux RTK query for data fetching and caching. Styli
 
 ## RTK Query
 
-RTK Query is a powerful data fetching and caching tool. It is designed to simplify common cases for loading data in a web application, eliminating the need to hand-write data fetching & caching logic yourself.
+I used RTK query in this application. It's a powerful data fetching and caching tool by Redux designed to simplify common cases for loading data. It eliminates the need to hand-write data fetching & caching logic yourself.
 
 Configuring an `addContact` hook in `redux/slicesredux/slices/api.ts`
 
