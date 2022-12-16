@@ -7,31 +7,23 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { useGetContactsQuery } from '../../redux/slices/api';
-import { Contact } from '../../models/Contact';
-
-interface ContactListItemProps {
-  contact: Contact;
-}
-
-function ContactListItem({ contact }: ContactListItemProps) {
-  const { email, given_name, family_name } = contact;
-
-  return (
-    <TableRow key={email}>
-      <TableCell component="th" scope="row">
-        {email}
-      </TableCell>
-      <TableCell align="right">{given_name}</TableCell>
-      <TableCell align="right">{family_name}</TableCell>
-    </TableRow>
-  );
-}
+import ErrorMessage from '../ErrorMessage';
+import LoadingProgress from '../LoadingProgress';
 
 function ContactList() {
-  const { data: contacts } = useGetContactsQuery();
+  const {
+    data: contacts,
+    isLoading,
+    isUninitialized,
+    isError
+  } = useGetContactsQuery();
 
-  if (!contacts) {
-    return null;
+  if (isLoading || isUninitialized) {
+    return <LoadingProgress />;
+  }
+
+  if (isError) {
+    return <ErrorMessage message="Error loading contacts" />;
   }
 
   return (
@@ -46,7 +38,13 @@ function ContactList() {
         </TableHead>
         <TableBody>
           {contacts.map((row) => (
-            <ContactListItem contact={row} key={row.id} />
+            <TableRow key={row.email}>
+              <TableCell component="th" scope="row">
+                {row.email}
+              </TableCell>
+              <TableCell align="right">{row.given_name}</TableCell>
+              <TableCell align="right">{row.family_name}</TableCell>
+            </TableRow>
           ))}
         </TableBody>
       </Table>

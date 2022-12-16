@@ -7,21 +7,24 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { Integration } from '../../models/Integration';
 import { useUser } from '../../context/UserContext';
 import {
   useAddUserIntegrationMutation,
-  useDeleteUserIntegrationMutation
+  useDeleteUserIntegrationMutation,
+  useGetIntegrationsQuery
 } from '../../redux/slices/api';
-import { Integration } from '../../models/Integration';
+import ErrorMessage from '../ErrorMessage';
+import LoadingProgress from '../LoadingProgress';
 
-interface IntegrationConnectProps {
+interface IntegrationEditProps {
   defaultValues: Integration;
 }
 
-function IntegrationEdit({ defaultValues }: IntegrationConnectProps) {
+function IntegrationEdit({ defaultValues }: IntegrationEditProps) {
   const { user } = useUser();
   const initialValue = user?.integrations.find(
-    (integration) => integration.name === defaultValues.name
+    (i) => i.name === defaultValues.name
   );
   const [integration, setIntegration] = useState(initialValue || defaultValues);
   const [addNewIntegration, { isLoading: isLoadingNew }] =
@@ -53,23 +56,25 @@ function IntegrationEdit({ defaultValues }: IntegrationConnectProps) {
       <Typography variant="h3" gutterBottom sx={{ pb: 2 }}>
         {integration.name}
       </Typography>
-
       <Stack spacing={4}>
         {Object.keys(integration.options).map((option) => (
           <React.Fragment key={option}>
             <TextField
               {...integrationForm.register(`options.${option}`, {
-                required: true,
-                minLength: 1
+                required: { value: true, message: 'Field required' }
               })}
               label={option}
               id={`${integration.name}-${option}`}
               disabled={integration.connected === true}
               fullWidth
             />
+            {integrationForm.formState.errors.options?.[option] && (
+              <Alert severity="warning">
+                {integrationForm.formState.errors.options[option]?.message}
+              </Alert>
+            )}
           </React.Fragment>
         ))}
-
         {integration.field_mappings && (
           <Box>
             <Typography variant="h5" gutterBottom sx={{ pb: 2 }}>
@@ -101,9 +106,6 @@ function IntegrationEdit({ defaultValues }: IntegrationConnectProps) {
             </Grid>
           </Box>
         )}
-        {Object.keys(integrationForm.formState.errors).length !== 0 && (
-          <Alert severity="warning">Field&apos;s cannot be empty</Alert>
-        )}
         <Button
           type="submit"
           variant="contained"
@@ -121,4 +123,29 @@ function IntegrationEdit({ defaultValues }: IntegrationConnectProps) {
   );
 }
 
-export default IntegrationEdit;
+function IntegrationsManage() {
+  const {
+    data: integrations,
+    isLoading,
+    isUninitialized,
+    isError
+  } = useGetIntegrationsQuery();
+
+  if (isLoading || isUninitialized) {
+    return <LoadingProgress />;
+  }
+
+  if (isError) {
+    return <ErrorMessage message="Error loading your integrations" />;
+  }
+
+  return (
+    <Stack spacing={12}>
+      {integrations.map((integration) => (
+        <IntegrationEdit defaultValues={integration} key={integration.name} />
+      ))}
+    </Stack>
+  );
+}
+
+export default IntegrationsManage;

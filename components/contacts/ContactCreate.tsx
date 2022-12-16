@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import { useAddContactMutation } from '../../redux/slices/api';
 import { useUser } from '../../context/UserContext';
 import { Contact } from '../../models/Contact';
+import LoadingProgress from '../LoadingProgress';
 
 export default function ContactCreate() {
   const { user } = useUser();
@@ -45,10 +46,14 @@ export default function ContactCreate() {
     }
   };
 
+  if (!user) {
+    return <LoadingProgress />;
+  }
+
   return (
     <form onSubmit={contactForm.handleSubmit(addContact)}>
       <Stack spacing={4}>
-        {Object.keys(user?.contacts[0] || {}).map((field) => (
+        {Object.keys(user.contacts[0]).map((field) => (
           <React.Fragment key={field}>
             <TextField
               {...contactForm.register(field as keyof Contact, {

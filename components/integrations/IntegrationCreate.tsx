@@ -11,8 +11,8 @@ import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { useAddIntegrationMutation } from '../../redux/slices/api';
 import { Integration } from '../../models/Integration';
+import { useAddIntegrationMutation } from '../../redux/slices/api';
 
 type IntegrationCreateForm = {
   name: string;
@@ -21,7 +21,8 @@ type IntegrationCreateForm = {
 };
 
 function IntegrationCreate() {
-  const [addNewIntegration, { isLoading }] = useAddIntegrationMutation();
+  const [addNewIntegration, { isLoading, isError }] =
+    useAddIntegrationMutation();
   const [result, setResult] = useState<{ type: string; message: string }>();
 
   const integrationForm = useForm<IntegrationCreateForm>({
@@ -62,24 +63,33 @@ function IntegrationCreate() {
       <Stack spacing={4}>
         <TextField
           {...integrationForm.register('name', {
-            required: true,
+            required: { value: true, message: 'Name required' },
             minLength: 1
           })}
           label="Name"
           id="new-integration-name"
           fullWidth
         />
+        {integrationForm.formState.errors.name && (
+          <Alert severity="warning">
+            {integrationForm.formState.errors.name.message}
+          </Alert>
+        )}
         {integrationFormOptionsArray.fields.map((f, i) => (
           <React.Fragment key={JSON.stringify(f)}>
             <TextField
               {...integrationForm.register(`options.${i}.field`, {
-                required: true,
-                minLength: 1
+                required: { value: true, message: 'Field required' }
               })}
               label="Option"
               id={`integration-options-${i}`}
               fullWidth
             />
+            {integrationForm.formState.errors.options?.[i] && (
+              <Alert severity="warning">
+                {integrationForm.formState.errors.options?.[i]?.field?.message}
+              </Alert>
+            )}
           </React.Fragment>
         ))}
         <Box>
@@ -144,9 +154,6 @@ function IntegrationCreate() {
             <strong id="integration-create-result">{result?.message}</strong>
           </Alert>
         </Collapse>
-        {Object.keys(integrationForm.formState.errors).length !== 0 && (
-          <Alert severity="warning">Fields cannot be empty</Alert>
-        )}
         <Button type="submit" variant="contained" disabled={isLoading}>
           {isLoading ? 'Adding Integration...' : 'Create Integration'}
         </Button>
